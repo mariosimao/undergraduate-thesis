@@ -26,12 +26,58 @@
 \usepackage{indentfirst}
 \usepackage{array}
 \usepackage{diagbox}
-\usepackage{natbib}
 
 %\usepackage[alf, bibjustif]{abntex2cite}
 
 \makelosymbols
 \makeloabbreviations
+
+% ======== ADDED BY MARIO ======== %
+% Reference numbers
+\usepackage[numbers]{natbib}
+
+% PlantUml diagrams
+\usepackage{svg}
+
+% Code blocks
+\usepackage{listings}
+\usepackage{color}
+\definecolor{d-blue}{HTML}{001080}
+\definecolor{blue}{HTML}{0000ff}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{d-red}{HTML}{A31515}
+\definecolor{pink}{HTML}{af00db}
+\def\beginlstdelim#1#2#3%
+{%
+    \def\endlstdelim{#2\egroup}%
+    \ttfamily#1\bgroup\color{#3}\aftergroup\endlstdelim%
+}
+\lstset{frame=tbrl,
+  showstringspaces=false,
+  % columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,
+  % numberstyle=\tiny\color{gray},
+  identifierstyle=\color{d-blue},
+  numberstyle=\color{gray},
+  keywordstyle=\color{pink},
+  emph=[1]{protected, private, public, static, final, extends, implements,
+           global, if, else, foreach ,for,
+           endforeach, endif, endfor, elseif,
+           as, try, catch, require_once},
+  emphstyle=[1]\color{pink},
+  emph=[2]{use, new},
+  emphstyle=[2]\color{blue},
+  moredelim = **[is][\beginlstdelim{@>}{(}{pink}]{@>}{(\$)},
+  commentstyle=\color{gray},
+  stringstyle=\color{d-red},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4,
+  showlines=true
+}
+% ======== ADDED BY MARIO ======== %
+
 
 \begin{document}
   \title{Título do TCC}
@@ -42,8 +88,8 @@
   \examiner{Prof.}{Nome Completo}{Ph.D.}
   \examiner{Prof.}{Nome Completo}{D.Sc.}
   %\examiner{Prof.}{Nome Completo}{D.Sc.}
-  \department{DNC} %UTTILIZE A SIGLA DO SEU DEPARTAMENTO MODIFICAR OS NOMES DE CURSO, DEPARTAMENTO E OBTENÇÃO DE GRAU (Obs: caso tenha algum equívoco nesses argumentos, necessário modificar o arquivo poli.cls no local que faz a leitura deste argumento)
-  \date{2}{2023}
+  \department{DEL} %UTTILIZE A SIGLA DO SEU DEPARTAMENTO MODIFICAR OS NOMES DE CURSO, DEPARTAMENTO E OBTENÇÃO DE GRAU (Obs: caso tenha algum equívoco nesses argumentos, necessário modificar o arquivo poli.cls no local que faz a leitura deste argumento)
+  \date{6}{2023}
   \keyword{keyword1}
   \keyword{keyword2}
   \keyword{keyword3}
@@ -64,15 +110,16 @@
   \mainmatter
     \include{Textual/chapter01}
     \include{Textual/chapter02}    
-    \include{Textual/chapter03}
-    \include{Textual/chapter04}
-    \include{Textual/chapter05}
-    \include{Textual/chapter06}
+    % \include{Textual/chapter03}
+    % \include{Textual/chapter04}
+    % \include{Textual/chapter05}
+    % \include{Textual/chapter06}
 
   \backmatter
   %\nocite{*}
   \bibliographystyle{coppe-unsrt}
   \bibliography{thesis}
-  \appendix
-  \include{Pos-textual/appenA}
+  
+  %\appendix
+  %\include{Pos-textual/appenA}
 \end{document}

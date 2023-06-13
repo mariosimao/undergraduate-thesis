@@ -279,14 +279,14 @@ FUNCTION {format.issn}
 FUNCTION {format.url}
 { url empty$
     { "" }
-    { new.block "Dispon{\' i}vel em: \textless\url{" url * "}\textgreater " * }
+    { new.block "Available at: \textless\url{" url * "}\textgreater " * }
   if$
 }
 
 FUNCTION {format.access}
 { access empty$
     { "" }
-    { new.block "Acesso em: " access * }
+    { new.block "Accessed: " access * }
   if$
 }
 

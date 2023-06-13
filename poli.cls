@@ -55,7 +55,8 @@
 \LoadClass[12pt,a4paper,oneside]{book}
 \RequirePackage{lastpage}
 \RequirePackage[hidelinks]{hyperref}
-\RequirePackage[english,brazil]{babel}
+% \RequirePackage[english,brazil]{babel}
+\RequirePackage[english]{babel}
 \RequirePackage{hyphenat}
 \RequirePackage{ifthen}
 \RequirePackage{graphicx}
