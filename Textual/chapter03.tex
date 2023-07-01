@@ -155,7 +155,6 @@ Using Service Work as an example, a collaboration \texttt{Task} represents work 
 }
 \end{lstlisting}
 
-
 The parameter \texttt{type} indicates Frapi to interpret the settings as a FacTree endpoint. The URI path of the route is defined on \texttt{path}. In this case, a client can request a list of all tasks by sending a \texttt{GET} request to https://alice-glance.cern.ch/service-work/api/tasks.
 
 The data returned by the endpoint and FacTree are configured under the \texttt{factory} key.  The combination of \texttt{name} and \texttt{path} define the factory file and its path, meaning that Frapi will try to find the FacTree definitions on \texttt{api/src/factories/sw-task.json} (\autoref{fig:frapi-v1-factree-dir}). The \texttt{order} parameter configures which fields are returned on the HTTP response. In the example, the \texttt{/tasks} endpoint returns only the task's name, description and the name of the activity. External URL and class information are hidden from the API consumer. Task and activity IDs are also returned by default.
@@ -219,6 +218,7 @@ GET /api/tasks
 \end{lstlisting}
 
 \subsection{Custom endpoints}
+\label{sec:custom-endpoints}
 
 By providing only FacTree endpoints, Frapi supported exclusively read operations. Clients could consume Glance data, but creating, updating and deleting resources was not yet supported. Since the in-house ORM did not fully support CRUD (Create, Read, Update, Delete) operations, Frapi needed another route creation method for the unsupported scenarios. The solution was to create custom endpoints where the developer could programmatically handle the request data and return the response. Due to the solution's flexibility, all CRUD operations could be supported.
 
@@ -355,6 +355,7 @@ When configured for Keycloak, Frapi reads the access token from the request head
 The new SSO solution, however, did not support e-groups, a fundamental information used by Glance for authorisation. To bypass this situation, the class \texttt{KeycloakUser} gets e-group information on demand via CERN WebServices. To use this feature, Glance systems should define the \texttt{WEBSERVICES\textunderscore LOGIN} and \texttt{WEBSERVICES\textunderscore PWD} environment variables with the credentials of the e-groups web service.
 
 \subsection{Authorisation}
+\label{sec:frapi-v1-authorisation}
 
 With users authenticated, Frapi verifies whether they can access the resources of the endpoint. The authorisation was developed to be independent of the authentication method or SSO, working similarly for Shibboleth and Keycloak. Frapi parses the access criteria defined by the API developer and validates the current user object against it. If authorisation fails, Frapi responds to the client with \texttt{403 Forbidden} status code and an error message.
 
