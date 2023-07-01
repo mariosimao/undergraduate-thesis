@@ -12,7 +12,7 @@ In 2013, the Glance Team developed the Frontend Engine for Glance (FENCE) \cite{
 
 One of FENCE's main goals was to share features between applications. It provides an object-oriented ecosystem written in PHP that allows code reuse by defining abstract classes with base functionalities. FENCE dependents could then extend the classes by overriding the desired methods in order to implement custom functionalities.
 
-The inheritance characteristic is exemplified in \autoref{fig:fence-inheritance}. FENCE defines an abstract \texttt{Content} class to display content to the end user. It also implements a \texttt{BaseProfile}, extending \texttt{Content} and adding features to be used on profile pages among FENCE dependents. The ALICE Membership application depends on FENCE and has a member profile page represented by the \texttt{Profile} class, which extends the `BaseProfile` inheriting behaviour from \texttt{BaseProfile}, \texttt{Content} and adding custom functionalities like the ones on the \texttt{post()} method.
+The inheritance characteristic is exemplified \autoref{fig:fence-inheritance}. FENCE defines an abstract \texttt{Content} class to display content to the end user. It also implements a \texttt{BaseProfile}, extending \texttt{Content} and adding features to be used on profile pages among FENCE dependents. The ALICE Membership application depends on FENCE and has a member profile page represented by the \texttt{Profile} class, which extends the \texttt{BaseProfile} inheriting behaviour from \texttt{BaseProfile}, \texttt{Content} and adding custom functionalities like the ones on the \texttt{post()} method.
 
 \begin{figure}[htbp]
   \centering
@@ -23,7 +23,7 @@ The inheritance characteristic is exemplified in \autoref{fig:fence-inheritance}
 
 The code block on \autoref{code:fence-usage} illustrates how applications use FENCE. Every page shares a skeleton composed of importing dependencies (line 5), FENCE initialisation (line 8), content injection (line 10), rendering (line 12) and error handling (lines 13 and 14).
 
-\begin{lstlisting}[language=PHP,label={code:fence-usage}]
+\begin{lstlisting}[language=PHP,label={code:fence-usage},caption={FENCE usage example.}]
 // index.php
 <?php
 
@@ -44,13 +44,13 @@ try {
 
 Once a page request arrives at the server, FENCE is initialised. A single command for the application developer unleashes multiple setups behind the scenes. The logger is initialised. Error handling is configured, writing the message into a log file and sending emails in case of fatal errors. JSON configuration files are parsed, and the configuration is set. A new connection to the application database is opened. The user is authorised. Database connection and user details are made available globally through the application. The page layout, header and footer are added to the HTML response. JavaScript and CSS files are loaded, including third-party libraries and injected into the response.
 
-Next, the application adds content to the page response. In this example, a menu is added by providing the path of a JSON configuration file with all the desired titles, labels and links from the menu. FENCE also supports adding complex search interfaces, forms, profile pages and other custom content. 
+Next, the application adds content to the page response. In this example, a menu is added by providing the path of a JSON configuration file with all the desired titles, labels and links from the menu. FENCE also supports adding complex search interfaces, forms, profile pages and other custom content.
 
-The `render` method outputs the complete response HTML, sending it via HTTP to the end user browser to display the application's page. Finally, any unhandled exception is caught and handled by logging the message into the user's log file, emailing the responsible developers, and displaying a user-friendly error page.
+The \texttt{render} method outputs the complete response HTML, sending it via HTTP to the end user browser to display the application's page. Finally, any unhandled exception is caught and handled by logging the message into the user's log file, emailing the responsible developers, and displaying a user-friendly error page.
 
 \section{Drawbacks of an in-house framework}
 
-At least twenty systems were developed using FENCE \cite{pinhao-tcc} and are part of the tools used by collaborators from the ATLAS, ALICE and LHCb experiments. The framework allowed the Glance Team to rapidly create new applications by exposing common features in the form of abstract classes and adding custom behaviours via configuration files. However, after years of dealing with it, the developer team realised and agreed that the framework and its design were responsible for the high maintenance cost of the systems, resulting in little time to develop new applications. The limitations of FENCE are part of the motivation for this work and will be examined in more detail in the next subsections.
+At least twenty systems were developed using FENCE \cite{pinhao-tcc} and are part of the tools used by collaborators from the ATLAS, ALICE and LHCb experiments. The framework allowed the Glance Team to rapidly create new applications by exposing common features as abstract classes and adding custom behaviours via configuration files. However, after years of dealing with it, the developer team realised and agreed that the framework and its design were responsible for the high maintenance cost of the systems, resulting in little time to develop new applications \cite{de-jesus-tcc}. The limitations of FENCE are part of the motivation for this work and will be examined in more detail in the next subsections. 
 
 \subsection{Installation}
 
@@ -62,7 +62,7 @@ Another issue brought about by the FENCE installation was the deployment to prod
 
 \subsection{Learning curve}
 
-Due to the characteristics of the collaboration between students of UFRJ and CERN, the Glance Team has a high turnover of developers, with most of the members being replaced every two years by new ones, often on their first work experience. It is then necessary for the applications to provide a low learning curve for the new group, meaning that they should learn fast and have enough time to contribute by creating new systems and features.
+Due to the characteristics of the collaboration between students of UFRJ and CERN, the Glance Team has a high turnover of developers, with most of the members being replaced every two years by new ones, often on their first work experience. It is then necessary for the applications to provide a low learning curve for the new group, meaning that they should learn fast and have enough time to contribute by creating new systems and features \cite{de-jesus-tcc}.
 
 Learning FENCE, however, was slow. The lack of documentation allied with magic methods and hidden coupling on the framework were a bottleneck on the first step of learning FENCE. The alternative options were to learn by studying examples of existing systems and asking senior colleagues for guidance, which could have been more time-efficient. It took 6 to 12 months for new members to have intermediary knowledge of the framework and build significant contributions.
 
@@ -73,6 +73,7 @@ As a framework, FENCE was not only a front-end layer for Glance. It had other re
 The members of the Glance Team spend most of their time building applications for the experiments at CERN, with no member fully dedicated to the FENCE framework and its in-house solutions. On the other hand, open-source libraries have a team of dedicated developers with expertise in the problem domain, good documentation, and tests. They were battle-tested by thousands, if not millions, of other applications in the industry. By outsourcing some of its features, the team could decrease development costs, reduce the overall learning curve, and increase both framework and systems quality.
 
 \subsection{Usage of global variables}
+\label{sec:global-variables}
 
 Applications built with FENCE access frequently used data such as current user, database connection and system configurations through global variables. The instances are set on the framework initialisation and available anywhere on the code base. At first, it appears to be an easy way to access commonly used objects, but this convenience has a price. Global variables can be modified in any part of the program, making it difficult for developers to reason about every place where it is used and ignore constraint checks. Other drawbacks with global variables include implicit coupling, concurrency issues, namespace pollution and problems with test setups \cite{rishikesh}.
 
@@ -106,18 +107,18 @@ One of the most common usages of REST is on Web APIs. Through HTTP, a client sen
 
 \begin{figure}[htbp]
   \centering
-  \includesvg{Imagens/chap02/rest-api.svg}
+  \includesvg[scale=0.77]{Imagens/chap02/rest-api.svg}
   \caption{Messages exchanged between clients and server on a fictional bookstore REST API.}
   \label{fig:rest-api}
 \end{figure}
 
 \section{Data exchange across CERN}
 
-Software systems, including the ones developed by the Glance Team, are fundamental to the organisation of CERN experiments. Even with different scopes, the intersection of data between applications was not rare. For example, multiple systems depend on the Foundation Database \cite{foundation-website}, a centralised source of CERN's participants, hierarchical structure of organisation units, roles and addresses. Applications access Foundation's information by querying shared database views.
+Software systems, including the ones developed by the Glance Team, are fundamental to the organisation of CERN experiments. Even with different scopes, the intersection of data between applications was not rare \cite{de-jesus-tcc}. For example, multiple systems depend on the Foundation Database \cite{foundation-website}, a centralised source of CERN's participants, hierarchical structure of organisation units, roles and addresses. Applications access Foundation's information by querying shared database views.
 
-Besides consuming Foundation data, Glance applications also communicate with other CERN systems by reading, writing and sharing information. Data sharing followed the same approach as Foundation: read access to the database was given to external services, which consumed information via tables and views. Glance-dependent components would need to connect to Glance's Oracle databases. Connecting to another database, however, is not always trivial. External systems may additionally have to install Oracle drivers, create accounts on the database or integrate their and Glance's databases directly. Changes in the original data source could cause side effects on dependent systems without notice. Finally, the sharing of personal information became critical after CERN started to comply with the General Data Protection Regulation (GDPR) \cite{gdpr} under Operational Circular no. 11 \cite{cern-operational-circular-11}.
+Besides consuming Foundation data, Glance applications communicate with other CERN systems by reading, writing and sharing information. Data sharing followed the same approach as Foundation: read access to the database was given to external services, which consumed information via tables and views. Glance-dependent components would need to connect to Glance's Oracle databases. Connecting to another database, however, is not always trivial. External systems may additionally have to install Oracle drivers, create accounts on the database or integrate their and Glance's databases directly. Changes in the original data source could cause side effects on dependent systems without notice. Finally, the sharing of personal information became critical after CERN started to comply with the General Data Protection Regulation (GDPR) \cite{gdpr} under Operational Circular no. 11 \cite{cern-operational-circular-11}.
 
-In 2019, CERN Analysis Preservation (CAP) was interested in ATLAS Glance Analysis system data. CAP is a service for researchers to preserve and document the various components of their physics analyses \cite{cap-website}. Glance Analysis is the application that manages the analyses for the ATLAS experiment \cite{atlas-glance-analysis} \cite{pinhao-tcc}. The need for data-sharing was clear, and knowing about the issues with direct database access, CAP asked the Glance Team if they could provide a REST API.
+In 2019, CERN Analysis Preservation (CAP) was interested in ATLAS Glance Analysis system data. CAP is a service for researchers to preserve and document the various components of their physics analyses by describing and structuring the knowledge behind an analysis to be understandable and reusable in the future \cite{cap-website}. Glance Analysis is the application that manages the analyses for the ATLAS experiment \cite{atlas-glance-analysis} \cite{gabriela-lemos-tcc}. CAP requested access to ATLAS Analysis data in an effort to centralise analysis information from all experiments. Knowing about the issues with direct database access, the external group asked the Glance Team if they could provide a REST API.
 
 The request made by CAP was the starting point of this work. Glance Team started to study how to structure a REST API and make it available to other users and services. The developers quickly realised that the project was an excellent opportunity to start the segregation of the front and back end of Glance systems, with the user interface being one of the consumers of the new REST API.
 
@@ -125,6 +126,6 @@ The request made by CAP was the starting point of this work. Glance Team started
 
 In order to ensure the full success of the ALICE experiment operation, a list of tasks is established and maintained. These tasks are also known as service work and concern detector maintenance, operation, calibration, quality control, data processing and outreach, coordination and managerial roles in the collaboration \cite{alice-collaboration-service-work}. The ALICE service work proposal was approved in August 2019 to be started in 2021 \cite{service-work-modus-operandi} and defines the share of work to be done by Member Institutes as described in the collaboration constitution \cite{alice-constitution}.
 
-In order to manage the service work of ALICE, the Glance Team developed the Glance Service Work system \cite{alice-glance-sw-website} \cite{sw-source-code}. It is a web application that handles task planning and assignments, accounting of work due and done by institutes, institute clusterisation and enforces rules to protect members of the collaboration of overwork.
+In order to manage the service work of ALICE, the Glance Team developed the Glance Service Work system \cite{alice-glance-sw-website}. It is a web application that handles task planning and assignments, accounting of work due and done by institutes, institute clusterisation and enforces rules to protect members of the collaboration of overwork.
 
 Glance Service Work was developed in parallel with the work described in this document and was one of the first Glance Team systems with front and back ends decoupled using a REST API and without any dependency on the FENCE framework. It is a successful case of implementation of this project, being developed during all the evolution phases of this work. Due to this reason, its requirements and source code will be used as examples in the following chapters. From now on, the Glance Service Work system will be identified simply as Service Work.
