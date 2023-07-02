@@ -82,6 +82,14 @@
 
 % Numero em subsubsection
 \setcounter{secnumdepth}{3}
+
+% Bar chart
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{
+    compat=1.9,
+    compat/bar nodes=1.8,
+}
 % ======== ADDED BY MARIO ======== %
 
 
@@ -118,8 +126,9 @@
     \include{Textual/chapter02}    
     \include{Textual/chapter03}
     \include{Textual/chapter04}
-    % \include{Textual/chapter05}
-    % \include{Textual/chapter06}
+    \include{Textual/chapter05}
+    \include{Textual/chapter06}
+    \include{Textual/chapter07}
 
   \backmatter
   %\nocite{*}

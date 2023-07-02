@@ -442,8 +442,7 @@ FUNCTION {n.dashify}
 
 FUNCTION {format.date}
 { year duplicate$ empty$
-    { "empty year in " cite$ * warning$
-       pop$ "" }
+    { pop$ "" }
     'skip$
   if$
   month empty$

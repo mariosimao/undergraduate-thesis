@@ -18,6 +18,7 @@ With the constraints in mind, Slim was the chosen library among Lumen \cite{lume
 Even though Slim was already on version 3, Frapi used the previous library version since the new one did not support PHP 5.4. Considering that was on the team's plans to update to PHP 7 on the FENCE systems, an abstraction was created on top of Slim 2 \cite{slim-2-doc} to emulate the interfaces from Slim 3 and ease a future migration.
 
 \section{Installation}
+\label{sec:frapi-v1-installation}
 
 For developers wishing to use the first version of Frapi to provide a REST API, the requirements were to use FENCE, which was the case for all Glance systems and create an \texttt{/api} folder with a PHP file as the entry point, JSON file with settings and an Apache configuration for redirection \cite{frapi-v1-setup-documentation}.
 
@@ -55,7 +56,7 @@ $api->run();
 
 The \texttt{api.json} file (\autoref{code:frapi-v1-api-json}) supports multiple API settings that will be later explained in detail on \autoref{sec:creating-endpoints}. The only mandatory value is the user class, which defines the authentication method used and can be later customised. For new applications using CERN's Keycloak \cite{keycloak-website} authentication, the base class \texttt{KeycloakUser} is enough.
 
-\begin{lstlisting}[language=JS,label={code:frapi-v1-api-json},caption={Minimal configuration for Frapi v1.}]
+\begin{lstlisting}[label={code:frapi-v1-api-json},caption={Minimal configuration for Frapi v1.}]
 // api.json
 {
     "user": {
@@ -315,7 +316,7 @@ It is usual among software programs to limit actions according to the user roles
 
 During the development of Frapi, CERN was changing its Single Sign-On (SSO) solution, transitioning from Shibboleth \cite{shibboleth-website} to Keycloak \cite{keycloak-website}. The SSO affects how users are authenticated, and due to the duality of methods, Frapi supports both. To choose the authentication method, the application should define on the API configuration file a user class from Frapi's defaults \texttt{ShibbolethUser} and \texttt{KeycloakUser} or an extension of one of them.
 
-\begin{lstlisting}[language=,label={code:dotenv-example},caption={Example of a \texttt{.env} file.}]
+\begin{lstlisting}[caption={Example of API configuration file using Keycloak authentication.}]
 // api.json
 {
     "user": {
@@ -436,7 +437,7 @@ Frapi exposes by default a \texttt{GET /user} endpoint, which returns informatio
 }
 \end{lstlisting}
 
-\begin{lstlisting}[language=PHP,label={code:user-endpoint-response},caption={Custom \texttt{User} class with additional properties.}]
+\begin{lstlisting}[language=PHP,label={code:custom-props-php},caption={Custom \texttt{User} class with additional properties.}]
 class User extends \Fence\Frapi\Users\KeycloakUser
 {
 	private $internalId;
@@ -471,6 +472,7 @@ In multi-user software, keeping a log of events such as errors, warnings, or oth
 Like FENCE, when a Frapi receives a request, it writes the first logs on the \texttt{api.log} file. After authentication, all the subsequent messages are written on a file named with the CERN username of the current user. The path where logfiles are saved is defined via the \texttt{LOG\textunderscore PATH} environment variable. To avoid large logfiles, Glance machines are configured with Logrotate \cite{logrotate-man} to chunks and compress old logs and facilitate the reading of recent ones.
 
 \subsection{Error handling}
+\label{sec:error-handling}
 
 When a program encounters a runtime error, it is expected to be treated and properly inform the user about the issue. Whenever an unhandled exception was thrown on FENCE applications, the framework would display a generic HTML page informing the user about an unexpected error. It would email the developers with details and a complete stack trace. This solution did not fit Frapi's needs, mainly because it needed to return errors as JSON, the format used by the API consumers. Secondly, the strategy to send a new email on every unhandled error was problematic. It was common for developers to get their inboxes spammed by the same exceptions, and it was hard to monitor how much and how often errors occurred.
 
@@ -566,6 +568,7 @@ $this->getSlim()->post("/tasks", function () {
 \end{lstlisting}
 
 \section{The Middleware pattern}
+\label{sec:middleware}
 
 The Middleware pattern, also known as the Chain of Responsibility \cite{chain-of-responsibility}, is a design pattern in which receiver objects, called middleware, are linked as a chain. Each receiver processes the message and calls the next one. Middleware can also interrupt the chain if needed, for example, when an error occurs. Slim supports the pattern \cite{slim-middleware-doc} and it is widely used by Frapi to orchestrate some of its core features via the Setup, Authentication and Endpoints Builder middleware.
 

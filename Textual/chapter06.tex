@@ -1,4 +1,138 @@
-\chapter{Conclusões}
+\chapter{Results}
 \label{chap6}
 
-Se chegou aqui é porque você ta quase lá, você vai conseguir, força!!
+\section{Applications}
+
+% \pgfplotstableread{
+%     Label FENCE Frapi Standalone
+%     2018  20    0     0
+%     2023  18    5     3
+% }\testdata
+% \begin{tikzpicture}
+%     \begin{axis}[
+%         ybar stacked,
+%         ymin=0,
+%         ymax=40,
+%         xtick=data,
+%         legend style={
+%             cells={anchor=west},
+%             legend pos=north west,
+%         },
+%         enlarge x limits=1,
+%         reverse legend=true,
+%         xticklabels from table={\testdata}{Label},
+%         xticklabel style={text width=2cm,align=center},
+%     ]
+%         \addplot [fill=red!60]
+%             table [y=FENCE, meta=Label, x expr=\coordindex]
+%                 {\testdata};
+%                     \addlegendentry{FENCE}
+%         \addplot [fill=yellow!60]
+%             table [y=Frapi, meta=Label, x expr=\coordindex]
+%                 {\testdata};
+%                     \addlegendentry{Frapi}
+%         \addplot [fill=green!60,nodes near coords,point meta=y]
+%             table [y=Standalone, meta=Label, x expr=\coordindex]
+%                 {\testdata};
+%                     \addlegendentry{Standalone}
+%     \end{axis}
+% \end{tikzpicture}
+
+As a result of this work, 10 systems, as listed on \autoref{table:new-apps}, were developed by the Glance Team using the proposed guidelines and created libraries. From 2018 to 2023, the number of applications increased from 20 to 27. Of the 20 systems built with FENCE, 3 were refactored and no longer rely on the in-house framework. The new architecture, packages and guidelines helped the developer team to expose 546 REST API endpoints to be consumed by external applications and internally by the user interface.
+
+\begin{table}[htbp]
+\begin{tabular}{ll|l|r|}
+\hline
+\multicolumn{1}{|l|}{Experiment} & System & Observation & \multicolumn{1}{l|}{\# Endpoints} \\
+\hline
+\multicolumn{1}{|l|}{ATLAS}      & Ideabox \cite{oliveira-tcc}    &             & 6   \\ 
+\multicolumn{1}{|l|}{ATLAS}      & Nominations \cite{oliveira-tcc} &             & 21  \\ 
+\multicolumn{1}{|l|}{ATLAS}      & Activities                     &             & 13  \\ 
+\multicolumn{1}{|l|}{ATLAS}      & Core Credits \cite{pires-tcc}  &             & 23  \\ 
+\multicolumn{1}{|l|}{ALICE}      & Service Work                   &             & 76  \\ 
+\multicolumn{1}{|l|}{ALICE}      & Membership                     & Refactoring & 38  \\ 
+\multicolumn{1}{|l|}{LHCb}       & Analysis Life Cycle Management &             & 83  \\ 
+\multicolumn{1}{|l|}{LHCb}       & Radiological Protection Survey &             & 43  \\ 
+\multicolumn{1}{|l|}{LHCb}       & Equipment Management System \cite{de-jesus-tcc} & Refactored  & 94  \\ 
+\multicolumn{1}{|l|}{LHCb}       & Membership                     & Refactored  & 149 \\
+\hline
+                                 &                                & \multicolumn{1}{r|}{\textbf{Total}} & 546 \\
+\cline{3-4} 
+\end{tabular}
+\caption{TODO}
+\label{table:new-apps}
+\end{table}
+
+The new applications exchange data via REST APIs, fulfilling the original interoperability requirement. Any HTTP client can exchange information with the applications. This includes the user interface and external systems. Examples of other CERN groups consuming Glance data include CERN Analysis Preservation (CAP) \cite{cap-website}, LHCb Scintillating Fibre tracker (SciFi) \cite{lhcb-scifi} and Ring-Imaging Cherenkov (RICH) \cite{lhcb-rich}. The Ports and Adapters architectural style chosen allows to easily plug applications to external data sources, such as the Foundation database, TREC (Traceability of potential Radioactive Equipment at CERN) \cite{eam-trec-website}, ALICE Train Analysis Monitor, Grappa \cite{grappa-website} and even legacy FENCE applications.
+
+The general usability of Glance systems increased with the decoupling of front-end and back-end code \cite{de-jesus-tcc}. The user interface accessed by the collaboration members became more fluid and modern. Reactive web applications powered by the REST APIs allowed users to perform commands and navigate through interfaces without reloading the page on every request.  
+
+The low number of responsibilities of each proposed building block allied to the decoupling of infrastructure code increased the overall testability of the systems. Unit and integration tests were written for all types of components on the new applications. FENCE systems usually had less than 5\% test coverage due to all coupling of business logic with the framework, presentation and other infrastructure codes. In contrast, new applications have more test coverage per line of code and functions, as shown on \autoref{table:apps-test}. The coverage increase helps to reduce the risk of change on large and complex applications and enhances their maintainability.
+
+\begin{table}[htbp]
+\begin{tabular}{|l|l|l|r|}
+\hline
+System                         & Line Coverage & Method Coverage & \multicolumn{1}{l|}{\# Tests} \\ \hline
+Service Work                   & 26.31\%       & 40.80\%         & 328                           \\ 
+Analysis Life Cycle Management & 35.78\%       & 42.05\%         & 55                            \\ 
+Radiological Protection Survey & 33.99\%       & 42.05\%         & 19                            \\ 
+Equipment Management System    & 34.01\%       & 43.13\%         & 78                            \\ 
+Membership                     & 37.82\%       & 46.91\%         & 117                           \\ \hline
+\end{tabular}
+\caption{TODO}
+\label{table:apps-test}
+\end{table}
+
+\subsection{Service Work}
+
+As an example of the order of magnitude of the new applications, the Service Work system helps the ALICE coordinators to manage XXXX tasks, with a total of YYYY planning and ZZZZ assignments to XXXX unique members of the collaboration from 2021 to 202X. Service Work exposes 76 different endpoints and supports many complex use cases and processes unique to ALICE collaboration.
+
+Since its release in 2020, multiple features have been incorporated, and many others have changed while the coordinators evolved the ideas of managing the experiment work. The solution proved maintainable and extensible by the facility to apply changes, enhance the system and plug new pieces of functionality in a short and predictable time. Additionally, the majority of the concepts of this work were already used in the software industry, with multiple articles, examples and tutorials available to developers. With widely available content, the learning curve decreased, resulting in a shorter time for new students joining the Glance project to make significant contributions.
+
+The adoption of the new architecture and guidelines helped to decrease the number of bugs in the applications and increase the development speed. Two systems developed for the same experiment, with a similar amount of features and the same number of developers, were selected for this analysis: SAMS (ALICE Glance Shift Accounting Management System) \cite{heron-tcc} and Service Work. The former was built with FENCE, and the latter is part of the result of this current work. From the SAMS 404 closed issues on the JIRA project management tool \cite{jira}, 31.9\% were bugs in contrast with 26.3\% of 330 issues from Service Work, indicating a drop of 17\% in work to solve failures and malfunctions of the application. The average time to close JIRA tickets, either the development of new features or bug fixes, decreased from 87 days on SAMS to 49 on Service Work, resulting in a productivity improvement of 43\%.
+
+\section{Libraries}
+
+Besides Frapi, nine libraries (\autoref{table:common-libs}) were created by the team to help develop Glance RESTful applications. Most of FENCE's core functionalities, such as authentication, authorisation, logging and error handling, were replaced by independent libraries as described on \autoref{sec:independent-libs}. As of June 2023, all packages totalled 40891 individual downloads within 200 releases containing new features and bug fixes. The \textit{fence-vue} \cite{fence-vue} \cite{de-jesus-tcc} library is the only package from \autoref{table:common-libs} related to front-end utilities. It played an important role in the decoupling of the presentation layer from business logic by providing shared user interface components written in Vue.js.
+
+\begin{table}[htbp]
+\begin{tabular}{ll|l|r|r|}
+\hline
+\multicolumn{1}{|l|}{Pack. Manager} & Package & Latest version & \multicolumn{1}{l|}{Releases} & \multicolumn{1}{l|}{Downloads} \\ \hline
+\multicolumn{1}{|l|}{Composer} & authorization-service & v0.12.3 & 23  & 2596  \\ 
+\multicolumn{1}{|l|}{Composer} & cern-authentication   & v0.5.0  & 5   & 2676  \\ 
+\multicolumn{1}{|l|}{Composer} & cors-middleware       & v0.1.0  & 1   & 150   \\ 
+\multicolumn{1}{|l|}{Composer} & error-middleware      & v0.3.0  & 3   & 161   \\ 
+\multicolumn{1}{|l|}{Composer} & keycloak-middleware   & v0.4.0  & 4   & 162   \\ 
+\multicolumn{1}{|l|}{Composer} & schema-middleware     & v0.2.0  & 2   & 8     \\ 
+\multicolumn{1}{|l|}{Composer} & preg-service          & v1.2.0  & 3   & 952   \\ 
+\multicolumn{1}{|l|}{Composer} & photo-service         & v1.0.5  & 6   & 1194  \\ 
+\multicolumn{1}{|l|}{npm}      & fence-vue             & v1.4.5  & 153 & 32992 \\
+\hline
+         & & \multicolumn{1}{r|}{\textbf{Total}} & 200 & 40891 \\
+\cline{3-5} 
+\end{tabular}
+\caption{TODO}
+\label{table:common-libs}
+\end{table}
+
+Additionally, the new packages have a CI (Continuous Integration) pipeline to execute automated tests to guarantee that changes in the shared library will not affect the dependent applications. Most packages had over 90\% of their source code covered by unit and integration tests as indicated on \autoref{table:common-libs-test}.
+
+\begin{table}[htbp]
+\begin{tabular}{|l|r|r|r|}
+\hline
+Package & \multicolumn{1}{l|}{Line Coverage} & \multicolumn{1}{l|}{Method Coverage} & \multicolumn{1}{l|}{\# Tests Cases} \\ \hline
+authorization-service & 92.06\% & 95.38\% & 89 \\ 
+cern-authentication   & 100\%   & 100\%   & 18 \\ 
+cors-middleware       & 100\%   & 100\%   & 6  \\ 
+error-middleware      & 100\%   & 100\%   & 23 \\ 
+keycloak-middleware   & 100\%   & 100\%   & 43 \\ 
+schema-middleware     & 96.67\% & 92.31\% & 11 \\
+preg-service          & N/A     & N/A     & 1  \\
+photo-service         & N/A     & N/A     & 11 \\
+\hline
+\end{tabular}
+\caption{TODO}
+\label{table:common-libs-test}
+\end{table}
+

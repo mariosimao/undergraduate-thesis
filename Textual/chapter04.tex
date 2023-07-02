@@ -115,6 +115,7 @@ Following the specification, schemas are written in JSON format. Since they usua
 \end{lstlisting}
 
 \subsection{Dependency injection}
+\label{sec:dependency-injection}
 
 Following the example on \autoref{code:controller-endpoint-schema-json}, Frapi internally instantiates the \texttt{TaskController} class and calls the \texttt{registerTask} method as simplified on \autoref{code:controller-call}. The controller instantiation is trivial when it does not have any dependencies.
 
@@ -232,7 +233,7 @@ Software architecture can be defined as the division of the system into smaller 
 \subsection{Layered Architecture}
 \label{sec:layered-architecture}
 
-At the beginning of the development of the first Frapi-based REST APIs, the Glance Team adopted the \textit{Layered Architecture}. Also known as \textit{n-tiered}, this architectural style organises the system components in horizontal layers with distinct roles. It mostly adopted with the \textbf{presentation}, \textbf{business}, \textbf{persistence} and \textbf{database} layers, but there is no limitation in the number and type of layers \cite{richards-architecture}. \autoref{layered-architecture-on-frapi} exemplifies how Layered Architecture was used where the blue containers represent the deployable units, layers are represented in orange with their components in green. The presentation layer was responsible for handling the communication with the API consumers. \textbf{Controller} classes would parse HTTP requests, coordinate the call of business logic and later format responses. The business layer executes a \textbf{Service} with specific domain rules and flows without validating the input from the users since this is the responsibility of the previous layer. Similarly, it does not have to know how to retrieve the data and reconstruct an \textbf{Entity} since it is the responsibility of the \textbf{Repository} on the persistence layer, which communicates with the datastore on the database layer. Each layer could be tested in isolation by mocking components and other layers, facilitating the development of automated tests.
+At the beginning of the development of the first Frapi-based REST APIs, the Glance Team adopted the \textit{Layered Architecture}. Also known as \textit{n-tiered}, this architectural style organises the system components in horizontal layers with distinct roles. It mostly adopted with the \textbf{presentation}, \textbf{business}, \textbf{persistence} and \textbf{database} layers, but there is no limitation in the number and type of layers \cite{richards-architecture}. \autoref{fig:layered-architecture-on-frapi} exemplifies how Layered Architecture was used where the blue containers represent the deployable units, layers are represented in orange with their components in green. The presentation layer was responsible for handling the communication with the API consumers. \textbf{Controller} classes would parse HTTP requests, coordinate the call of business logic and later format responses. The business layer executes a \textbf{Service} with specific domain rules and flows without validating the input from the users since this is the responsibility of the previous layer. Similarly, it does not have to know how to retrieve the data and reconstruct an \textbf{Entity} since it is the responsibility of the \textbf{Repository} on the persistence layer, which communicates with the datastore on the database layer. Each layer could be tested in isolation by mocking components and other layers, facilitating the development of automated tests.
 
 % TODO: fig layared-arch
 \begin{figure}[htbp]
@@ -427,7 +428,7 @@ class TaskPlanned
 }
 \end{lstlisting}
 
-\autoref{code:domain-event-on-entity} illustrates how the command of \texttt{plan} triggers the creation of the event. The method \texttt{registerEvent} keeps all activity with the entity during the request. Events are later released by \texttt{releaseEvents} to be added to an \textbf{Event Publisher}, which will be explained on \autoref{application-handling-events}.
+\autoref{code:domain-event-on-entity} illustrates how the command of \texttt{plan} triggers the creation of the event. The method \texttt{registerEvent} keeps all activity with the entity during the request. Events are later released by \texttt{releaseEvents} to be added to an \textbf{Event Publisher}, which will be explained on \autoref{sec:event-subscriber}.
 
 \begin{lstlisting}[language=PHP,label={code:domain-event-on-entity},caption={Example of the \texttt{Task} entity coordinating the \texttt{TaskPlanned} event.}]
 class Task
@@ -595,6 +596,7 @@ class AssignTaskHandler
 \end{lstlisting}
 
 \subsubsection{Event Subscriber}
+\label{sec:event-subscriber}
 
 Similar to command handlers, event subscribers execute use cases. The key difference is that event subscribers are not executed by client commands but are triggered with the occurrence of domain events. Usually, a command creates changes in the domain state that raises an event. The event is released on the command handler and dispatched via the Event Dispatcher, which calls the subscribers. Event subscribers are listeners previously defined as observers of certain events.
 

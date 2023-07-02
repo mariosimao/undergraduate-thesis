@@ -1,0 +1,21 @@
+\chapter{Conclusion}
+\label{chap7}
+
+Glance systems perform an important role in experiments at CERN, the largest particle physics laboratory in the world and one of the most respected centres for scientific research. As of June 2023, the team maintains 27 web applications to manage a wide range of resources, including equipment, publications, tasks and members. With a user base of almost 9000 members, the Glance applications support the complex operations of ATLAS, ALICE and LHCb experiments.
+
+Due to the project's relevance, all Glance systems must keep functioning during the entire life-cycle of the experiments. Maintainability is also important, allowing the team to introduce features at the same pace as the experiments evolve and new requirements emerge. Those needs, together with the requirements of exchanging data with other CERN groups, lead to the development of a common module for creating REST APIs, to the decoupling of presentation and business logic, and the deprecation of the FENCE framework.
+
+
+\section{Future Work}
+
+The proposed guidelines and libraries are not permanent. They should evolve with the needs of the Glance systems and CERN experiments. Emerging technologies, architectures and designs should be observed and may be incorporated into the development process. Some points were not part of the scope of this project but are welcome to enhance the overall solution and make Glance applications more mature.
+
+Documenting the REST APIs is done manually by writing all the endpoints contracts in the OpenApi \cite{open-api} format to be later parsed and displayed on a Swagger interface \cite{swagger-ui}. The same contract is rewritten in the JSON Schema \cite{json-schema-spec} format and is consumed by the Schema Middleware \cite{schema-middleware} to validate the body of HTTP requests. The release of OpenApi Specification (OAS) 3.1 \cite{oas-3.1} supports full compatibility with JSON Schema. Adopting the new version would allow automatic document endpoints based on input schema specification and vice-versa.
+
+The logging mechanism could be improved by sending logs to monitoring systems instead of writing them on files. It would result in better observability, monitoring and telemetry of the Glance systems.
+
+SuperSearch \cite{lange-tcc}, FENCE's advanced search, was reimplemented as a decoupled component described in Michelly Teixeira's work \cite{de-jesus-tcc}. However, it was only adopted on LHCb Glance systems. It is one of the core features of the deprecated framework and could be made available to other Glance applications.
+
+Automated tests, such as unit and integration tests, could be more prioritised. It would increase the systems' overall test coverage, reducing the risk of errors and making the applications more maintainable.
+
+Finally, for the ALICE Service Work system, the integration with the ALICE Glance Shift Accounting Management System (SAMS) is foreseen. According to the roadmap, shifts on the ALICE detector should be credited to members and institutes as Class 2 tasks.
