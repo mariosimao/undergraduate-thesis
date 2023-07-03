@@ -74,7 +74,7 @@ top=2.5cm,bottom=2.5cm,left=3.0cm,right=3.0cm]{geometry}
 \newcounter{minexaminers}
 \newboolean{isdraft}
 \newboolean{maledoc}
-\setboolean{maledoc}{false}
+\setboolean{maledoc}{true}
 \setboolean{isdraft}{false}
 \newboolean{needbb}
 \setboolean{needbb}{false}
@@ -278,16 +278,17 @@ top=2.5cm,bottom=2.5cm,left=3.0cm,right=3.0cm]{geometry}
 	\global\let\and\relax}
 \newcommand\makefrontpage{%
 	\begin{center}
-		\noindent% just to prevent indentation narrowing the line width for this line
-		\includegraphics[width=0.15\textwidth]{Imagens/Logo_UFRJ.png}%
+		% \noindent% just to prevent indentation narrowing the line width for this line
+		% \includegraphics[width=0.15\textwidth]{Imagens/Logo_UFRJ.png}%
 		\begin{minipage}[b]{0.7\textwidth}
 			\centering
-			\textit{\textbf{UNIVERSIDADE FEDERAL DO RIO DE JANEIRO}}\\
-			\vspace{2 mm}
+			\textbf{Universidade Federal do Rio de Janeiro}\\
+			% \vspace{2 mm}
             \textbf{Escola Politécnica}\\
 			Departamento de \local@deptname\\
 		\end{minipage}%
-		\includegraphics[width=0.35\textwidth]{Imagens/Logo_EPUFRJ_2020.png}\par
+		% \includegraphics[width=0.35\textwidth]{Imagens/Logo_EPUFRJ_2020.png}\par
+        \par
 		\vspace*{10mm}
 		\sloppy\nohyphens{\MakeUppercase\local@title}\par
 		\vspace*{7mm}
@@ -295,28 +296,71 @@ top=2.5cm,bottom=2.5cm,left=3.0cm,right=3.0cm]{geometry}
 	\end{center}\par
 	\vspace*{4mm}
 	\frontpage@maintext
-	\vspace*{8mm}
-	\noindent\local@approvedname:\par
-	\begin{center}
-		\begin{flushright}
-			\vskip16\p@ \baselineskip12pt
-			\eqparbox{signture@list}{\hrulefill}\\
-			\eqparbox{signture@list}{\protect%\centering%
-				\ \ \ \ \ \ \ \ \ \ \@adtitle\ \@adname\ \@adsurn, \@addegree\ \ \ \ \ \ \ \ \ \ }\\
-			\ifthenelse{\equal{\@coadname}{\@empty}}{}{%
-				\vskip26\p@ \baselineskip12pt
-				\eqparbox{signture@list}{\hrulefill}\\
-				\eqparbox{signture@list}{\protect%\centering%
-					\ \ \ \ \ \ \ \ \ \ \@coadtitle\ \@coadname\ \@coadsurn, \@coaddegree\ \ \ \ \ \ \ \ \ \ }\\}
-			\count1=0
-			\@whilenum \count1<\@examiner \do {
-				\vskip26\p@ \baselineskip12pt
-				\eqparbox{signture@list}{\hrulefill}\\
-				\eqparbox{signture@list}{\protect%\centering%
-					\ \ \ \ \ \ \ \ \ \ \csname S:\the\count1 \endcsname\ \ \ \ \ \ \ \ \ \ }\\
-				\advance\count1 by 1}
-		\end{flushright}
-	\end{center}
+	% \vspace*{8mm}
+	% \noindent\local@approvedname:\par
+	% \begin{center}
+	% 	\begin{flushright}
+          \vspace{0.8cm}
+            Autor:
+            \vspace{0.5cm}
+            \begin{flushright}
+             \parbox{10cm}{
+             \vskip26\p@ \baselineskip12pt
+                \hrulefill\\
+                \centering{{\@authname\ \@authsurn}}\\
+                \vspace{0.1cm}
+             }
+            \end{flushright}
+                  
+                  
+            Orientador:
+            \vspace{0.3cm}
+            \begin{flushright}
+             \parbox{10cm}{
+             \vskip26\p@ \baselineskip12pt
+                \hrulefill\\
+                \centering{Flávio Luis de Mello, D.Sc.}\\
+                \vspace{0.1cm}
+             }
+            \end{flushright}
+            
+            Examinador:
+            \begin{flushright}
+             \parbox{10cm}{
+             \vskip26\p@ \baselineskip12pt
+                \hrulefill\\
+                \centering{Daniel Ratton Figueiredo, D.Sc.}\\
+                \vspace{0.1cm}
+             }
+            \end{flushright}
+            
+            Examinador:
+            \begin{flushright}
+             \parbox{10cm}{
+             \vskip26\p@ \baselineskip12pt
+                \hrulefill\\
+                \centering{Natanael Moura Junior, D. Sc.}\\
+                \vspace{0.1cm}
+             }
+            \end{flushright}
+			% \vskip16\p@ \baselineskip12pt
+			% \eqparbox{signture@list}{\hrulefill}\\
+			% \eqparbox{signture@list}{\protect%\centering%
+			% 	\ \ \ \ \ \ \ \ \ \ \@adtitle\ \@adname\ \@adsurn, \@addegree\ \ \ \ \ \ \ \ \ \ }\\
+			% \ifthenelse{\equal{\@coadname}{\@empty}}{}{%
+			% 	\vskip26\p@ \baselineskip12pt
+			% 	\eqparbox{signture@list}{\hrulefill}\\
+			% 	\eqparbox{signture@list}{\protect%\centering%
+			% 		\ \ \ \ \ \ \ \ \ \ \@coadtitle\ \@coadname\ \@coadsurn, \@coaddegree\ \ \ \ \ \ \ \ \ \ }\\}
+			% \count1=0
+			% \@whilenum \count1<\@examiner \do {
+			% 	\vskip26\p@ \baselineskip12pt
+			% 	\eqparbox{signture@list}{\hrulefill}\\
+			% 	\eqparbox{signture@list}{\protect%\centering%
+			% 		\ \ \ \ \ \ \ \ \ \ \csname S:\the\count1 \endcsname\ \ \ \ \ \ \ \ \ \ }\\
+			% 	\advance\count1 by 1}
+		% \end{flushright}
+	% \end{center}
 	\vspace*{\fill}
 	\frontpage@bottomtext}
 \newcommand\config@hypersetup{%
@@ -640,12 +684,12 @@ top=2.5cm,bottom=2.5cm,left=3.0cm,right=3.0cm]{geometry}
 				\noindent Resumo do Projeto de Graduação apresentado
 				\sloppy\nohyphens{{\` a} Escola Politécnica/UFRJ como parte dos requisitos
 					necessários para a obtenção do grau de
-					\local@degname\ Nuclear}
+					\local@jobname.}
 			}
 			\newcommand\foreignabstract@toptext{%
 				\noindent \sloppy\nohyphens{Abstract of \foreign@doctype\ presented to
 					POLI/UFRJ as a partial fulfillment of the requirements for the
-					degree of Nuclear \foreign@degname\ }
+					degree of \foreign@jobname.}
 			}
 			%% 
 			%%
