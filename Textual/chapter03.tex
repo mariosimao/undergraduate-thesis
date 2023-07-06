@@ -43,8 +43,8 @@ For developers wishing to use the first version of Frapi to provide a REST API, 
 
 The file tree of the system should look like \autoref{fig:frapi-v1-directory-structure}, consisting of the \texttt{api} directory with the \texttt{index.php} file (\autoref{code:frapi-v1-index-php}) working as the REST API entry point. In essentially 3 lines, it imports dependencies, initialises Frapi with the path of the configuration file and starts the API service.
 
-\begin{lstlisting}[language=PHP,label={code:frapi-v1-index-php},caption={Script executed when any REST API request arrives at the server.}]
-// index.php
+\begin{listing}[H]
+\begin{minted}{php}
 <?php
  
 require_once "./vendor/autoload.php";
@@ -52,22 +52,30 @@ require_once "./vendor/autoload.php";
 $api = new \Fence\Frapi\Api("api.json");
  
 $api->run();
-\end{lstlisting}
+\end{minted}
+\caption{Script executed when any REST API request arrives at the server.}
+\label{code:frapi-v1-index-php}
+\end{listing}
+
 
 The \texttt{api.json} file (\autoref{code:frapi-v1-api-json}) supports multiple API settings that will be later explained in detail on \autoref{sec:creating-endpoints}. The only mandatory value is the user class, which defines the authentication method used and can be later customised. For new applications using CERN's Keycloak \cite{keycloak-website} authentication, the base class \texttt{KeycloakUser} is enough.
 
-\begin{lstlisting}[label={code:frapi-v1-api-json},caption={Minimal configuration for Frapi v1.}]
-// api.json
+\begin{listing}[htbp]
+\begin{minted}{json}
 {
     "user": {
         "class": "Fence\\Frapi\\Users\\KeycloakUser"
     }
 }
-\end{lstlisting}
+\end{minted}
+\caption{Minimal configuration for Frapi v1.}
+\label{code:frapi-v1-api-json}
+\end{listing}
 
 The last requirement is the \texttt{.htaccess} (\autoref{code:frapi-v1-htaccess}) Apache configuration. It is common between systems using Frapi and contains request redirection used by Slim and enables the \texttt{Authorization} header used on authentication which will be further explained on \autoref{sec:frapi-v1-auth}.
 
-\begin{lstlisting}[language=,label={code:frapi-v1-htaccess},caption={Apace configuration for redirecting request to the API entry point.}]
+\begin{listing}[htbp]
+\begin{minted}{apache}
 # Required for Slim Framework
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -77,42 +85,38 @@ RewriteRule . index.php [L]
 # Enable authorization header
 RewriteCond %{HTTP:Authorization} ^(.*)
 RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
-\end{lstlisting}
+\end{minted}
+\caption{Apache configuration for redirecting request to the API entry point.}
+\label{code:frapi-v1-htaccess}
+\end{listing}
 
 \section{Creating endpoints}\label{sec:creating-endpoints}
 
 Frapi v1 supports creating FacTree-based and custom endpoints by defining them on JSON format. After defining a new route, the configuration should be added to JSON file and referenced on the API settings as exemplified on code \autoref{code:api-json-files}. If desired, all endpoint definition files on specific folders can be parsed by Frapi as shown on \autoref{code:api-json-folders}.
 
-\begin{lstlisting}[language=,label={code:api-json-files},caption={Frapi v1 configuration for parsing endpoint files.}]
-// api.json
+\begin{listing}[htbp]
+\begin{minted}{json}
 {
 	"endpoints": {
-	    "files": [
-		    "routes/task.json"
-	    ]
+	    "files": [ "routes/task.json" ]
 	}
 }
-\end{lstlisting}
+\end{minted}
+\caption{Frapi v1 configuration for parsing endpoint files.}
+\label{code:api-json-files}
+\end{listing}
 
-\begin{lstlisting}[language=,label={code:api-json-folders},caption={Frapi v1 configuration for parsing all endpoint files inside a directory.}]
-// api.json
+\begin{listing}[htbp]
+\begin{minted}{json}
 {
 	"endpoints": {
-		"folders": [
-			"routes"
-		]
+		"folders": [ "routes" ]
 	}
 }
-\end{lstlisting}
-
-% \begin{lstlisting}[language=,label={code:frapi-v1-htaccess},caption={TODO}]
-% api/
-% |__ routes
-% |   |__ task.json
-% |__ api.json
-% |__ index.php
-% |__ ...
-% \end{lstlisting}
+\end{minted}
+\caption{Frapi v1 configuration for parsing all endpoint files inside a directory.}
+\label{code:api-json-folders}
+\end{listing}
 
 \subsection{FacTree endpoints}
 
@@ -127,8 +131,8 @@ Using Service Work as an example, a collaboration \texttt{Task} represents work 
   \label{fig:class-diagram-sw-task}
 \end{figure}
 
-\begin{lstlisting}[language=,label={code:task-factree-endpoint-settings},caption={FacTree endpoint configuration file for the \texttt{Task} model.}]
-// routes/task.json
+\begin{listing}[htbp]
+\begin{minted}{json}
 {
     "type": "factree",
     "path": "/tasks",
@@ -154,7 +158,10 @@ Using Service Work as an example, a collaboration \texttt{Task} represents work 
         }
     }
 }
-\end{lstlisting}
+\end{minted}
+\caption{FacTree endpoint configuration file for the \texttt{Task} model.}
+\label{code:task-factree-endpoint-settings}
+\end{listing}
 
 The parameter \texttt{type} indicates Frapi to interpret the settings as a FacTree endpoint. The URI path of the route is defined on \texttt{path}. In this case, a client can request a list of all tasks by sending a \texttt{GET} request to https://alice-glance.cern.ch/service-work/api/tasks.
 
@@ -185,7 +192,8 @@ The data returned by the endpoint and FacTree are configured under the \texttt{f
 
 Finally, the last configuration parameter defines the format of the response. When requesting a single task (\autoref{code:request-single-task}), the response contains a \texttt{task} with a data object as the value. On the other hand, while requesting all tasks (\autoref{code:request-all-tasks}), the output changes to \texttt{tasks} key with a list of objects as values.
 
-\begin{lstlisting}[language=,label={code:request-single-task},caption={Example of HTTP request and response from a FacTree endpoint to a single task.}]
+\begin{listing}[htbp]
+\begin{minted}{text}
 GET /api/tasks/197
 
 200 OK
@@ -194,12 +202,16 @@ GET /api/tasks/197
 		"id": 197,
 		"name": "Resource Coordinator",
 		"description": "Responsible for...",
-		"activity": { "id": 2, "name": "Management"	}
+		"activity": { "id": 2, "name": "Management" }
 	}
 }
-\end{lstlisting}
+\end{minted}
+\caption{Example of HTTP request and response from a FacTree endpoint to a single task.}
+\label{code:request-single-task}
+\end{listing}
 
-\begin{lstlisting}[language=,label={code:request-all-tasks},caption={Example of HTTP request and response from a FacTree endpoint to all tasks.}]
+\begin{listing}[htbp]
+\begin{minted}{text}
 GET /api/tasks
 
 200 OK
@@ -216,7 +228,10 @@ GET /api/tasks
 		...
 	]
 }
-\end{lstlisting}
+\end{minted}
+\caption{Example of HTTP request and response from a FacTree endpoint to all tasks.}
+\label{code:request-all-tasks}
+\end{listing}
 
 \subsection{Custom endpoints}
 \label{sec:custom-endpoints}
@@ -225,17 +240,21 @@ By providing only FacTree endpoints, Frapi supported exclusively read operations
 
 The definition of a custom endpoint on Frapi is done similarly to a FacTree endpoint: by creating a JSON configuration file. In this case, the code \autoref{code:custom-endpoint-json} exemplifies the two parameters needed: a class type and the class's namespace.
 
-\begin{lstlisting}[language=,label={code:custom-endpoint-json},caption={Configuration file for custom endpoints.}]
-// routes/create-task.json
+\begin{listing}[htbp]
+\begin{minted}{json}
 {
     "type": "class",
     "class": "Alice\\ServiceWork\\Api\\CreateTask"
 }
-\end{lstlisting}
+\end{minted}
+\caption{Configuration file for custom endpoints.}
+\label{code:custom-endpoint-json}
+\end{listing}
 
 After defining the route, the developer should create the corresponding class as illustrated in code \autoref{code:custom-endpoint-php}. The class should extend Frapi's \texttt{BaseEndpoint} abstract class and implement the method \texttt{buildEndpoints()}  where the developer can add any custom code to read the request and write a response. Frapi exposes the instance of the Slim router via \texttt{getSlim()} from \texttt{BaseEndpoint}, and it is used in this example to define a \texttt{POST /tasks} endpoint for creating tasks. All Slim v2 features \cite{slim-2-doc} are available through the same interface. The endpoint's behaviour is defined on the second argument \texttt{post()} as an anonymous function. In the example, a Slim v3 forward-compatible request object is provided by Frapi and used to create a task. Finally, the \texttt{render} utility function returns a 201 HTTP response to the client with the associative array serialised as JSON on the body and a \texttt{Content-Type: application/json} header.
 
-\begin{lstlisting}[language=PHP,label={code:custom-endpoint-php},caption={PHP class with the custom endpoint definition for creating a Service Work task.}]
+\begin{listing}[htbp]
+\begin{minted}{php}
 <?php
 
 namespace Alice\ServiceWork\Api;
@@ -253,7 +272,7 @@ class CreateTask extends BaseEndpoint
 			    
                 $newTask = $this->createTask($request);
                 
-                $this->getApi()->render([ "task" => $newTask ], 201);
+                $this->getApi()->render(["task" => $newTask], 201);
             }
         );
     }
@@ -263,7 +282,10 @@ class CreateTask extends BaseEndpoint
         // Crates task based on request data...
     }
 }
-\end{lstlisting}
+\end{minted}
+\caption{PHP class with the custom endpoint definition for creating a Service Work task.}
+\label{code:custom-endpoint-php}
+\end{listing}
 
 \section{Environment variables}
 
@@ -271,9 +293,13 @@ Glance systems usually need previously defined values that affect how the progra
 
 To address the issue of using global variables described in \autoref{sec:global-variables}, Frapi started to rely on environment variables \cite{frapi-environment-variables}, which were independent of the framework in use and could be set in multiple ways, including the operating system scope. To use an environment variable anywhere on the codebase, a single line of code (\autoref{code:getenv-php}) is needed.
 
-\begin{lstlisting}[language=PHP,label={code:getenv-php},caption={Example of retrienving an environment variable on PHP.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 $databasePassword = getenv("DB_PASSWORD");
-\end{lstlisting}
+\end{minted}
+\caption{Example of retrienving an environment variable on PHP.}
+\label{code:getenv-php}
+\end{listing}
 
 There are multiple ways to define an environment variable \cite{defining-environment-variables}. However, Frapi also manages to automatically parse a set of files on the root of the API folder and make the values available through the application. The solution was inspired by how the Vue framework \cite{vue-about} handles environment variables \cite{vue-environment-variables}.
 
@@ -288,7 +314,8 @@ The files automatically parsed by Frapi are listed below, where \texttt{[mode]} 
 
 \texttt{.env}, also called \textit{dotenv}, files are commonly used on the industry application and contain a key-value list of user-defined variables, as illustrated on code \autoref{code:dotenv-example}. Notice that the \texttt{LOG\textunderscore DIR} and \texttt{OUTPUT\textunderscore DIR} keys reference \texttt{BASE\textunderscore PATH}, avoiding duplication of values.
 
-\begin{lstlisting}[language=,label={code:dotenv-example},caption={Example of a \texttt{.env} file.}]
+\begin{listing}[htbp]
+\begin{minted}{bash}
 # .env
 DB_USERNAME="alice-service-work"
 DB_PASSWORD="my-super-secret"
@@ -296,7 +323,10 @@ DB_PASSWORD="my-super-secret"
 BASE_PATH="/svr/alice/service-work"
 LOG_DIR="${BASE_PATH}/logs"
 OUTPUT_DIR="{BASE_PATH}/output"
-\end{lstlisting}
+\end{minted}
+\caption{Example of a \texttt{.env} file.}
+\label{code:dotenv-example}
+\end{listing}
 
 An environment file for a specific mode (e.g. \texttt{.env.production}) will take higher priority than a generic one (e.g. \texttt{.env}). Local files (e.g. \texttt{.env.local}) will take higher priority than the committed ones (e.g. \texttt{.env}). The following list enumerates the loading order of \textit{.env} files. Every time an environment file is loaded, existing variables are overwritten by the new ones.
 
@@ -316,8 +346,8 @@ It is usual among software programs to limit actions according to the user roles
 
 During the development of Frapi, CERN was changing its Single Sign-On (SSO) solution, transitioning from Shibboleth \cite{shibboleth-website} to Keycloak \cite{keycloak-website}. The SSO affects how users are authenticated, and due to the duality of methods, Frapi supports both. To choose the authentication method, the application should define on the API configuration file a user class from Frapi's defaults \texttt{ShibbolethUser} and \texttt{KeycloakUser} or an extension of one of them.
 
-\begin{lstlisting}[caption={Example of API configuration file using Keycloak authentication.}]
-// api.json
+\begin{listing}[htbp]
+\begin{minted}{json}
 {
     "user": {
         "class": "\\Fence\\Frapi\\Users\\KeycloakUser"
@@ -327,7 +357,10 @@ During the development of Frapi, CERN was changing its Single Sign-On (SSO) solu
         "folders": ["routes"],
     }
 }
-\end{lstlisting}
+\end{minted}
+\caption{Example of API configuration file using Keycloak authentication.}
+% \label{}
+\end{listing}
 
 Both \texttt{KeycloakUser} and \texttt{ShibbolethUser} contains base user data such as CERN Person ID, name, email and username. CERN e-groups are also supported but fetched differently in each authentication scenario.
 
@@ -362,7 +395,8 @@ With users authenticated, Frapi verifies whether they can access the resources o
 
 For FacTree endpoints, the permission schema should be added to the route JSON configuration, as illustrated in code \autoref{code:factree-auth}. In the example, it is defined under the \texttt{authorization} key as a list of rules for accessing the endpoint with the list of Service Work tasks. Frapi parses each rule as a single criteria and applies an OR boolean operator between them. In this case, the user needs to have either an \textit{admin} role \textbf{or} being a \textit{service-work-coordinator} within the \textit{cern-member} \textbf{and} \textit{alice-member} e-groups. Behind the scenes, the getter methods of the user object are used to validate the permissions. In the example, \texttt{\$user->getRoles()} and \texttt{\$user->getEgroups()} are used. Besides e-groups and roles, any custom user property is supported on the permission schema, needing only the user object to provide a corresponding getter method returning a list of strings.
 
-\begin{lstlisting}[language=,label={code:factree-auth},caption={Access control configuration for a FacTree endpoint.}]
+\begin{listing}[htbp]
+\begin{minted}{json}
 {
     "type": "factree",
     "path": "/tasks",
@@ -373,14 +407,17 @@ For FacTree endpoints, the permission schema should be added to the route JSON c
 	        "roles": ["service-work-coordinator"]
 	    }
     ],
-    "factory": { ... }
+    "factory": { "...": "..." }
 }
-\end{lstlisting}
+\end{minted}
+\caption{Access control configuration for a FacTree endpoint.}
+\label{code:factree-auth}
+\end{listing}
 
 A similar logic applies to custom routes. The difference is that authorisation rules are listed on the corresponding PHP class. The code \autoref{code:php-auth} illustrates how to define the same set of rules of the previous example when registering a task by using the \texttt{authorize()} method from the \texttt{BaseEndpoint} abstract class.
 
-% TODO
-\begin{lstlisting}[language=PHP,label={code:php-auth},caption={Access control configuration for a custom endpoint.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 public function buildEndpoints()
 {
     $this->getSlim()->post(
@@ -397,13 +434,17 @@ public function buildEndpoints()
         }
     );
 }
-\end{lstlisting}
+\end{minted}
+\caption{Access control configuration for a custom endpoint.}
+\label{code:php-auth}
+\end{listing}
 
 \subsection{User endpoint}
 
 With the decoupling of the front and back end, the user interfaces developed by Glance became separate applications and consumers of the team APIs. One of the first needs of the clients was to retrieve experiment or system-specific information about the current user that was not available via the authentication methods. 
 
-\begin{lstlisting}[language=,label={code:user-endpoint-response},caption={Example reponse of the \texttt{/user} endpoint.}]
+\begin{listing}[htbp]
+\begin{minted}{json}
 {
 	"personId": 837034,
 	"username": "mgunters",
@@ -414,11 +455,16 @@ With the decoupling of the front and back end, the user interfaces developed by 
 	"egroups": ["alice-member", "fence-developers"],
 	"role": ["developer"]
 }
-\end{lstlisting}
+\end{minted}
+\caption{Response example of the \texttt{/user} endpoint.}
+\label{code:user-endpoint-response}
+\end{listing}
+
 
 Frapi exposes by default a \texttt{GET /user} endpoint, which returns information about the current user as shown on code \autoref{code:user-endpoint-response}. For custom properties, Frapi systems should extend the user class, implement getter methods and list the additional properties to be returned by the API under the \texttt{endpoints/user/additionalProperties} key as illustrated on \autoref{code:custom-props-json} and \autoref{code:custom-props-php}. The example shows how to add an \texttt{internalId} property to the current user endpoint.
 
-\begin{lstlisting}[language=,label={code:custom-props-json},caption={Configuration for additional properties on the user endpoint.}]
+\begin{listing}[htbp]
+\begin{minted}{json}
 {
     "user": {
         "class": "\\Alice\\ServiceWork\\User"
@@ -435,9 +481,13 @@ Frapi exposes by default a \texttt{GET /user} endpoint, which returns informatio
         }
     }
 }
-\end{lstlisting}
+\end{minted}
+\caption{Configuration for additional properties on the user endpoint.}
+\label{code:custom-props-json}
+\end{listing}
 
-\begin{lstlisting}[language=PHP,label={code:custom-props-php},caption={Custom \texttt{User} class with additional properties.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 class User extends \Fence\Frapi\Users\KeycloakUser
 {
 	private $internalId;
@@ -454,20 +504,30 @@ class User extends \Fence\Frapi\Users\KeycloakUser
         return $this->intenralId;
     }
 }
-\end{lstlisting}
-
+\end{minted}
+\caption{Custom \texttt{User} class with additional properties.}
+\label{code:custom-props-php}
+\end{listing}
 
 \subsection{Logging}
 
 In multi-user software, keeping a log of events such as errors, warnings, or other information is important to monitor the system's operation, debug problems and audit \cite{logging-wikipedia}. For the same reasons, having a logging mechanism that worked for Frapi was essential. The chosen solution was FENCE Logger due to the fact of being independent of the framework, worked well on previous applications and was already known by the Glance Team. The \texttt{Fence\\Logger} is a simple class with static methods (\autoref{code:logger-php-example}) for different log levels (debug, info, notice, warning, error, critical, alert and emergency) which writes messages as new lines on logfiles (\autoref{code:log-line-example}).
 
-\begin{lstlisting}[language=PHP,label={code:logger-php-example},caption={How to write logs on Frapi v1.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 \Fence\Logger::info("User logged in.");
-\end{lstlisting}
+\end{minted}
+\caption{How to write logs on Frapi v1.}
+\label{code:logger-php-example}
+\end{listing}
 
-\begin{lstlisting}[language=,label={code:log-line-example},caption={Example of a log line.}]
+\begin{listing}[htbp]
+\begin{minted}{php}
 [21-May-2023 22:43:42 Europe/Zurich] [INFO] User logged in.
-\end{lstlisting}
+\end{minted}
+\caption{Example of a log line.}
+\label{code:log-line-example}
+\end{listing}
 
 Like FENCE, when a Frapi receives a request, it writes the first logs on the \texttt{api.log} file. After authentication, all the subsequent messages are written on a file named with the CERN username of the current user. The path where logfiles are saved is defined via the \texttt{LOG\textunderscore PATH} environment variable. To avoid large logfiles, Glance machines are configured with Logrotate \cite{logrotate-man} to chunks and compress old logs and facilitate the reading of recent ones.
 
@@ -478,7 +538,8 @@ When a program encounters a runtime error, it is expected to be treated and prop
 
 To address the issues above, Frapi implemented a new error handler \cite{frapi-error-handler-doc}. Unhandled exceptions are caught, logged, and the API responds with the \texttt{500 Internal Server Error} status code and the body of code \autoref{code:error-500-body}. The \texttt{id} field is a unique identifier of the error instance, which can be found on the user log file. The error response follows the JSON:API specification, which defines how REST APIs clients and servers should communicate \cite{json-api-intro} \cite{json-api-error} \cite{json-api-error-example}.
 
-\begin{lstlisting}[language=,label={code:error-500-body},caption={HTTP response when Frapi catches an unhandled exception.}]
+\begin{listing}[htbp]
+\begin{minted}{json}
 {
     "id": "5e417eec56914",
     "errors": [
@@ -489,26 +550,33 @@ To address the issues above, Frapi implemented a new error handler \cite{frapi-e
         }
     ]
 }
-\end{lstlisting}
-
+\end{minted}
+\caption{HTTP response when Frapi catches an unhandled exception.}
+\label{code:error-500-body}
+\end{listing}
 
 To collect, manage and alert the developers about untreated exceptions, Frapi optionally supports Sentry \cite{sentry-about}. Sentry is a third-party error monitoring SaaS (Software as a Service) made available by the CERN IT \cite{sentry-cern}. To send exceptions to the tool, the API should be configured with the URL of a Sentry instance, as exemplified in code \autoref{code:sentry-config}.
 
-\begin{lstlisting}[language=,label={code:sentry-config},caption={API configuration to enable Sentry.}]
+\begin{listing}[htbp]
+\begin{minted}{json}
 {
     "sentry": {
         "dns": "https://public@sentry.example.com/1"
     },
-    "user": { ... },
-    "endpoints": { ... }
+    "user": { },
+    "endpoints": { }
 }
-\end{lstlisting}
+\end{minted}
+\caption{API configuration to enable Sentry.}
+\label{code:sentry-config}
+\end{listing}
 
 Software errors, however, are not exclusively made of unexpected exceptions. There are cases where the application validates user input, checks domain invariants and others. In these scenarios, it is important to inform the API client about the error cause. As a solution, Frapi supports custom errors thrown as an instance of the \texttt{Fence\textbackslash Frapi\textbackslash Exceptions\textbackslash BaseException} class. 
 
 \autoref{code:custom-error-example} exemplifies how to throw custom errors to be formatted by Frapi in a scenario where Service Work tasks can not be created on weekends and should not have an empty name. In case of any validation error, the \texttt{BaseException} is thrown, automatically caught by Frapi and returned to the client, following the JSON:API specification as illustrated on \autoref{code:custom-error-response-example}. Custom errors are not automatically logged and are not sent to Sentry.
 
-\begin{lstlisting}[language=PHP,label={code:custom-error-example},caption={How to throw custom errors to be formated in user-friendly responses.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 $this->getSlim()->post("/tasks", function () {
 	$request = $this->getApi()->getRequest();
 	$errors = [];
@@ -547,14 +615,18 @@ $this->getSlim()->post("/tasks", function () {
 
 	// Register task...
 });
-\end{lstlisting}
+\end{minted}
+\caption{How to throw custom errors to be formated in user-friendly responses.}
+\label{code:custom-error-example}
+\end{listing}
 
-\begin{lstlisting}[language=,label={code:custom-error-response-example},caption={HTTP response body of custom errors following the JSON:API schema.}]
+\begin{listing}[htbp]
+\begin{minted}{json}
 {
     "errors": [
         {
             "status": "403",
-            "detail": "Editing secret powers is not authorized on Sundays."
+            "detail": "Editing is not authorized on weekend."
         },
         {
             "status": 400,
@@ -565,7 +637,10 @@ $this->getSlim()->post("/tasks", function () {
         }
     ]
 }
-\end{lstlisting}
+\end{minted}
+\caption{HTTP response body of custom errors following the JSON:API schema.}
+\label{code:custom-error-response-example}
+\end{listing}
 
 \section{The Middleware pattern}
 \label{sec:middleware}
@@ -574,7 +649,6 @@ The Middleware pattern, also known as the Chain of Responsibility \cite{chain-of
 
 Figure \autoref{fig:frapi-internal-sequence} is a simplified sequence diagram of how Frapi works internally. When a client sends an HTTP request to the API server, Frapi is instantiated, loads files and setups essential services such as logger and error handler. Then, the middleware chain is called, starting with the Setup and following to Authentication and Endpoints Builder. After the sequence of receivers has finished their job, Slim maps the requested route to the correct function, which reads the request and sets the response object on Frapi, which outputs it to the server. Finally, the server returns an HTTP response to the API consumer.
 
-% TODO fig middleware sequence diagram
 \begin{figure}[htbp]
   \centering
   \includesvg[scale=0.6]{Imagens/chap03/middleware-sequence-diagram.svg}

@@ -226,7 +226,8 @@ top=2.5cm,bottom=2.5cm,left=3.0cm,right=3.0cm]{geometry}
 	\makefrontpage
 	\clearpage
 	\pagestyle{plain}
-	\ifthenelse{\boolean{maledoc}}{}{\makecatalog}%
+	% \ifthenelse{\boolean{maledoc}}{}{\makecatalog}%
+    % \makecatalog
 }
 \renewcommand\mainmatter{%
 	\immediate\write\@auxout{%
@@ -329,7 +330,7 @@ top=2.5cm,bottom=2.5cm,left=3.0cm,right=3.0cm]{geometry}
              \parbox{10cm}{
              \vskip26\p@ \baselineskip12pt
                 \hrulefill\\
-                \centering{Daniel Ratton Figueiredo, D.Sc.}\\
+                \centering{Daniel Ratton Figueiredo, Ph.D.}\\
                 \vspace{0.1cm}
              }
             \end{flushright}
@@ -361,8 +362,9 @@ top=2.5cm,bottom=2.5cm,left=3.0cm,right=3.0cm]{geometry}
 			% 	\advance\count1 by 1}
 		% \end{flushright}
 	% \end{center}
-	\vspace*{\fill}
-	\frontpage@bottomtext}
+	% \vspace*{\fill}
+	% \frontpage@bottomtext
+ }
 \newcommand\config@hypersetup{%
 	\begingroup
 	% changes to \toks@ and \count@ are kept local;

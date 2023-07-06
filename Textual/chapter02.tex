@@ -23,8 +23,8 @@ The inheritance characteristic is exemplified \autoref{fig:fence-inheritance}. F
 
 The code block on \autoref{code:fence-usage} illustrates how applications use FENCE. Every page shares a skeleton composed of importing dependencies (line 5), FENCE initialisation (line 8), content injection (line 10), rendering (line 12) and error handling (lines 13 and 14).
 
-\begin{lstlisting}[language=PHP,label={code:fence-usage},caption={FENCE usage example.}]
-// index.php
+\begin{listing}
+\begin{minted}{php}
 <?php
 
 use Fence\Fence;
@@ -40,7 +40,10 @@ try {
 } catch (Exception $exception) {
     Fence::handle_exception($exception);
 }
-\end{lstlisting}
+\end{minted}
+\caption{FENCE usage example.}
+\label{code:fence-usage}
+\end{listing}
 
 Once a page request arrives at the server, FENCE is initialised. A single command for the application developer unleashes multiple setups behind the scenes. The logger is initialised. Error handling is configured, writing the message into a log file and sending emails in case of fatal errors. JSON configuration files are parsed, and the configuration is set. A new connection to the application database is opened. The user is authorised. Database connection and user details are made available globally through the application. The page layout, header and footer are added to the HTML response. JavaScript and CSS files are loaded, including third-party libraries and injected into the response.
 

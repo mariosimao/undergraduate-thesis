@@ -26,8 +26,8 @@ The core functionality of Frapi was routing: mapping requested endpoints to cert
 
 \autoref{code:slim-index} illustrates how Service Work uses Slim to define the API endpoints. Compared to Frapi v1 installation (\autoref{sec:frapi-v1-installation} and \autoref{sec:dependency-injection}), the additional steps on the entry point are the explicit middleware and routes registration. The \texttt{\$app} is no longer an instance of the Frapi \texttt{Api} object but the Slim app.
 
-\begin{lstlisting}[language=PHP,label={code:slim-index},caption={API entry point script without Frapi.}]
-// index.php
+\begin{listing}[htbp]
+\begin{minted}{php}
 <?php
 
 // Create app
@@ -42,11 +42,15 @@ AccountingRoutes::addRoutes($app);
 // ...
 
 $app->run();
-\end{lstlisting}
+\end{minted}
+\caption{API entry point script without Frapi.}
+\label{code:slim-index}
+\end{listing}
 
 Each bounded context has its class for defining endpoints. \autoref{code:sw-route-class} is an example of some routes exposed by the \textit{Task} module. They map the combination of HTTP methods (\texttt{GET}, \texttt{POST}, \texttt{PUT}, \texttt{DELETE}) and URL paths to methods on controller classes. The \texttt{PUT /tasks/197} request would result in calling the \texttt{update()} method of the \texttt{TaskController} class.
 
-\begin{lstlisting}[language=PHP,label={code:sw-route-class},caption={HTTP route definitions for the \texttt{Task} bounded context.}]
+\begin{listing}[htbp]
+\begin{minted}{php}
 <?php
 
 namespace Alice\ServiceWork\Task\Infrastructure\Api;
@@ -63,16 +67,22 @@ class TaskRoutes
         $app->delete("/tasks/{taskId}", [TaskController::class, "remove"]);
 
 		$app->post("/tasks/{taskId}/planning", [TaskController::class, "plan"]);
-		$app->post("/tasks/{taskId}/assignements", [TaskController::class, "assign"]);
+		$app->post("/tasks/{taskId}/assignements", [
+            TaskController::class, "assign"
+        ]);
 
 		// ...
 	}
 }
-\end{lstlisting}
+\end{minted}
+\caption{HTTP route definitions for the \texttt{Task} bounded context.}
+\label{code:sw-route-class}
+\end{listing}
 
 Following the previous example, \autoref{code:sw-controller} illustrates the structure of the \texttt{update} method. Compared to Frapi v2 (\autoref{sec:controller-endpoints}), the signature of controller methods changed from Frapi's \texttt{Api} instance to PSR-7 standard Request and Response objects. Request variables such as \texttt{taskId} are no longer retrieved as parameters but via the \texttt{getAttribute()} method.
 
-\begin{lstlisting}[language=PHP,label={code:sw-controller},caption={Controller class on a stack without FENCE and Frapi.}]
+\begin{listing}[htbp]
+\begin{minted}{php}
 <?php
 
 namespace Alice\ServiceWork\Task\Infrastructure\Api;
@@ -95,7 +105,10 @@ class TaskController
 		return $response;
 	}
 }
-\end{lstlisting}
+\end{minted}
+\caption{Controller class on a stack without FENCE and Frapi.}
+\label{code:sw-controller}
+\end{listing}
 
 A breaking change in relying on third-party libraries for adoption is the end of support to endpoints defined on JSON configuration files. It was a deliberate decision since reading files is an I/O operation that increased latency on all requests to Glance APIs. The new solution does not need to read and parse JSON files, the endpoints are defined on PHP files and the script is cached after the first request, leveraging a smaller performance footprint.
 
@@ -105,17 +118,21 @@ Due to the breaking changes on route definitions and controller methods signatur
 
 The error middleware \cite{error-middleware} is similar to Frapi v1 (\autoref{sec:error-handling}), it catches all unhandled exceptions and formatts them into a machine and human-readable JSON response following the JSON:API specification \cite{json-api-error}. It also has optional logging via PSR-3 logger, debug mode which adds the error stack trace to the response and opt-in error dispatch to the Sentry \cite{sentry-about} \cite{sentry-php-sdk} as illustrated on the middleware usage example.
 
-\begin{lstlisting}[language=PHP,caption={Usage example of the error middleware.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 $errorMiddleware = ErrorMiddleware::create()
 	->setLogger($logger)  // Optional. Accepts any PSR-3 logger
 	->debugMode(true)     // Optional. Set to false on production
-	->useSentry();        // Optional. Sentry SDK must be installed and configured
+	->useSentry();        // Optional. Sentry SDK must be installed
 	
 $app->add(/* other middlewares */);
 $app->add($errorMiddleware);
 
 $app->run();
-\end{lstlisting}
+\end{minted}
+\caption{Usage example of the error middleware.}
+% \label{}
+\end{listing}
 
 \subsection{Authentication and Authorisation}
 \label{sec:authentication-and-authorisation}
@@ -124,7 +141,8 @@ The Glance CERN Authentication library \cite{cern-authentication-lib} was develo
 
 The Keycloak Middleware \cite{keycloak-middleware} was created to handle authentication and authorisation on API requests against the CERN SSO. It internally depends on the \texttt{glance-project/cern-authentication} library. The authentication behaviour is configured as illustrated on \autoref{code:keycloak-middleware-example} and behaves similarly to Frapi (\autoref{sec:frapi-v1-auth}).
 
-\begin{lstlisting}[language=PHP,label={code:keycloak-middleware-example},caption={Usage example of the Keycloak middleware.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 $keycloakMiddleware = KeycloakMiddleware::create(
     getenv("CLIENT_ID"),     // API Client ID
     getenv("CLIENT_SECRET"), // API Client Secret
@@ -135,11 +153,15 @@ $keycloakMiddleware = KeycloakMiddleware::create(
         echo $user->personId();
     }
 );
-\end{lstlisting}
+\end{minted}
+\caption{Usage example of the Keycloak middleware.}
+\label{code:keycloak-middleware-example}
+\end{listing}
 
 The user details are injected on the request object and can be retrieved on controllers via the PSR-7 \texttt{getAttribute()} method as exemplified on \autoref{code:get-user-example}. Person ID, username, email, first name, last name and roles can be accessed using the user object.
 
-\begin{lstlisting}[language=PHP,label={code:get-user-example},caption={Example of how the user object can be retrieve while using the Keycloak middleware.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 class TaskController
 {
 	public function assignTask(Request $request, Response $response): Response
@@ -151,11 +173,15 @@ class TaskController
 		// ...
 	}
 }
-\end{lstlisting}
+\end{minted}
+\caption{Example of how the user object can be retrieve while using the Keycloak middleware.}
+\label{code:get-user-example}
+\end{listing}
 
 The authorisation is available on the \texttt{glance-project/keycloak-middleware} package via the \texttt{RoleAuthorizationMiddleware}. This middleware, like any other, can be used on a specific endpoint or through all application routes. It is based on roles defined by the CERN Authorization Service and should usually be used on the route registration, allowing the check for all or any of the specified roles.
 
-\begin{lstlisting}[language=PHP,caption={Usage example of the Role Authorization Middleware.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 <?php
 
 class TaskRoutes 
@@ -175,7 +201,10 @@ class TaskRoutes
 			));
 	}
 }
-\end{lstlisting}
+\end{minted}
+\caption{Usage example of the Role Authorization Middleware.}
+% \label{}
+\end{listing}
 
 Authentication and authorisation exceptions are compatible with \texttt{glance-project/error-middleware} and can be formatted according to the JSON:API specification if the library is set up by the application, responding with \texttt{401} \texttt{403} HTTP status respectively. 
 
@@ -185,7 +214,8 @@ Logging had small changes compared to how it was done on Frapi. Since applicatio
 
 A key difference between the PSR-3 logger and the FENCE logger is that the methods are not static. This demands explicitly declaring the logger as a dependency on each class but also allows the possibility of having multiple types of logging. \autoref{code:fence-logger-example} and \autoref{code:psr-3-example} illustrates the contrasts on the usage of FENCE and PSR-3 loggers.
 
-\begin{lstlisting}[language=PHP,label={code:fence-logger-example},caption={Usage example of the FENCE logger.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 class TaskController
 {
 	public function register(Request $req, Response $res): Response
@@ -194,9 +224,13 @@ class TaskController
 		// ...
 	}
 }
-\end{lstlisting}
+\end{minted}
+\caption{Usage example of the FENCE logger.}
+\label{code:fence-logger-example}
+\end{listing}
 
-\begin{lstlisting}[language=PHP,label={code:psr-3-example},caption={Usage example of the PSR-3 logger.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 use Psr\Log\LoggerInterface;
 
 class TaskController
@@ -214,11 +248,15 @@ class TaskController
 		// ...
 	}
 }
-\end{lstlisting}
+\end{minted}
+\caption{Usage example of the PSR-3 logger.}
+\label{code:psr-3-example}
+\end{listing}
 
 To follow the same behaviour of FENCE and Frapi systems where logs were written for user-specific files, the \texttt{glance-project/keycloak-middleware} after-login parameter can be used to change to the current logfile path. This setup is exemplified on \autoref{code:logger-username-config}.
 
-\begin{lstlisting}[language=PHP,label={code:logger-username-config},caption={How to change the logfile based on the current user with the Keycloak middleware.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 KeycloakMiddleware::create(
 	// ...
 	function (Request $request, User $user) use ($container) {
@@ -228,7 +266,10 @@ KeycloakMiddleware::create(
 		// Change log file path using the username...
 	}
 );
-\end{lstlisting}
+\end{minted}
+\caption{How to change the logfile based on the current user with the Keycloak middleware.}
+\label{code:logger-username-config}
+\end{listing}
 
 \subsection{Groups and CERN Authorisation Service}
 
@@ -238,27 +279,38 @@ The old e-groups service was widely used by Glance projects to create mailing li
 
 The library is an abstraction on top of the CERN Authorization Service API \cite{authz-service-api} and uses the Glance CERN Authentication package (\autoref{sec:authentication-and-authorisation}) to authenticate applications. It supports 17 different use cases on \textit{groups} and \textit{identities} provided by the Authorization Service API, but it is flexible enough to be expanded to support \textit{accounts}, \textit{applications}, \textit{resources} and \textit{roles} also provided by the API.  The main usages library are to create groups, update and list its members as exemplified on \autoref{code:create-groups}, \autoref{code:sync-groups} and \autoref{code:fetch-group-members}, respectively.
 
-\begin{lstlisting}[language=PHP,label={code:create-groups},caption={Example of how to create groups using the Authorization Service package.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 $provider = GroupProvier::createWithAppCredentials($clientId, $clientSecret);
 
 $provider->createGroup(
-	"alice-members",                                         // Group identifier
-	"ALICE Members",                                         // Group display name
-	"Contains all active members of the ALICE collaboration" // Group description
+	"alice-members",                                         // Identifier
+	"ALICE Members",                                         // Display name
+	"Contains all active members of the ALICE collaboration" // Description
 );
-\end{lstlisting}
+\end{minted}
+\caption{Example of how to create groups using the Authorization Service package.}
+\label{code:create-groups}
+\end{listing}
 
-\begin{lstlisting}[language=PHP,label={code:sync-groups},caption={Example of how to syncronize group members using the Authorization Service package.}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 $identityIds = $identityProvider->getIdsFromPersonIds([837034, 123456]);
 $groupProvider->synchronizeMembers("alice-members", $identityIds);
-\end{lstlisting}
+\end{minted}
+\caption{Example of how to syncronize group members using the Authorization Service package.}
+\label{code:sync-groups}
+\end{listing}
 
-
-\begin{lstlisting}[language=PHP,label={code:fetch-group-members},caption={Example of how to fetch group members using the Authorization Service package}]
+\begin{listing}[htbp]
+\begin{minted}[startinline]{php}
 $members = $provider->findMemberIdentities("alice-members");
 
 foreach ($members as $member) {
 	$member->personId();
 	$member->displayName();
 }
-\end{lstlisting}
+\end{minted}
+\caption{Example of how to fetch group members using the Authorization Service package.}
+\label{code:fetch-group-members}
+\end{listing}
