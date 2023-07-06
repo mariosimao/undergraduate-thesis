@@ -33,6 +33,11 @@
 \makeloabbreviations
 
 % ======== ADDED BY MARIO ======== %
+% Autoref Chapters with capital letter
+\addto\extrasenglish{
+  \def\chapterautorefname{Chapter}
+}
+
 % Reference numbers
 \usepackage[numbers]{natbib}
 
@@ -91,7 +96,11 @@
     baselinestretch=1.3,
 }
 \AtEndEnvironment{listing}{\vspace{-10pt}}
-\providecommand*{\listingautorefname}{Listing}
+\providecommand*{\listingautorefname}{Algorithm}
+\renewcommand\listingscaption{Algorithm}
+\makeatletter
+\@addtoreset{listing}{chapter}
+\makeatother 
 % \addtoreset{listing}{chapter}
 
 % Directory Tree
@@ -140,6 +149,7 @@
   \tableofcontents
   \listoffigures
   \listoftables
+  \listoflistings
   \printlosymbols
   \printloabbreviations
 
