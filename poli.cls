@@ -330,7 +330,7 @@ top=2.5cm,bottom=2.5cm,left=3.0cm,right=3.0cm]{geometry}
              \parbox{10cm}{
              \vskip26\p@ \baselineskip12pt
                 \hrulefill\\
-                \centering{Daniel Ratton Figueiredo, Ph.D.}\\
+                \centering{Claudia Maria Lima Werner, D. Sc.}\\
                 \vspace{0.1cm}
              }
             \end{flushright}
@@ -340,7 +340,7 @@ top=2.5cm,bottom=2.5cm,left=3.0cm,right=3.0cm]{geometry}
              \parbox{10cm}{
              \vskip26\p@ \baselineskip12pt
                 \hrulefill\\
-                \centering{Natanael Moura Junior, D. Sc.}\\
+                \centering{Diego Leonel Cadette Dutra, D. Sc.}\\
                 \vspace{0.1cm}
              }
             \end{flushright}
