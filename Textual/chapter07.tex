@@ -8,9 +8,9 @@ Due to the project's relevance, all Glance systems must keep functioning during 
 
 \section{Future Work}
 
-The proposed guidelines and libraries are not permanent. They should evolve with the needs of the Glance systems and CERN experiments. Emerging technologies, architectures and designs should be observed and may be incorporated into the development process. Some points were not part of the scope of this project but are welcome to enhance the overall solution and make Glance applications more mature.
+The proposed guidelines and libraries are not permanent. They should evolve with the needs of the Glance systems and CERN experiments. Emerging technologies, architectures and designs should be observed and may be incorporated into the development process. Some of the following suggestions were not part of the scope of this project but are welcome to enhance the overall solution and make Glance applications more mature.
 
-Documenting the REST APIs is done manually by writing all the endpoints contracts in the OpenApi \cite{open-api} format to be later parsed and displayed on a Swagger interface \cite{swagger-ui}. The same contract is rewritten in the JSON Schema \cite{json-schema-spec} format and is consumed by the Schema Middleware \cite{schema-middleware} to validate the body of HTTP requests. The release of OpenApi Specification (OAS) 3.1 \cite{oas-3.1} supports full compatibility with JSON Schema. Adopting the new version would allow automatic document endpoints based on input schema specification and vice-versa.
+Documenting the REST APIs is done manually by writing all the endpoints contracts in the OpenApi \cite{open-api} format to be later parsed and displayed on a Swagger interface \cite{swagger-ui}. The same contract is rewritten in the JSON Schema \cite{json-schema-spec} format and is consumed by the Schema Middleware \cite{schema-middleware} to validate the body of HTTP requests. The release of OpenApi Specification (OAS) 3.1 \cite{oas-3.1} supports full compatibility with JSON Schema. Adopting the new version would allow to automatically document endpoints based on input schema specification and vice-versa.
 
 The logging mechanism could be improved by sending logs to monitoring systems instead of writing them on files. It would result in better observability, monitoring and telemetry of the Glance systems.
 
