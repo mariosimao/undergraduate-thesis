@@ -3,15 +3,15 @@
 
 \section{Theme}
 
-This project concerns the efforts for decoupling web applications for the ATLAS, ALICE and LHCb experiments at CERN (European Organisation for Nuclear Research), resulting in separate front and backend modules. Thus, the problem is updating the previous in-house framework, moving away from its previous monolithic architecture, which led, over time, to a slow, unreliable, and unadaptable software development process with a high learning curve and a lack of defined standards. 
+This project concerns the efforts for decoupling web applications for the \acrshort{atlas}, \acrshort{alice} and \acrshort{lhcb} experiments at \acrfull{cern}, resulting in separate front and backend modules. Thus, the problem is updating the previous in-house framework, moving away from its previous monolithic architecture, which led, over time, to a slow, unreliable, and unadaptable software development process with a high learning curve and a lack of defined standards.
 
 \section{Scope}
 
-One of the multiple results of the collaboration between the Federal University of Rio de Janeiro (UFRJ) and CERN was the creation of Glance \cite{grael-tcc} in 2003. It was a technology which allowed members of the ATLAS experiment to create search interfaces on the web over multiple databases containing information about detector equipment and cables. It was later applied to other use cases, fetching different kinds of data from the experiments. With such relevance, the group of developers was named after Glance.
+One of the multiple results of the collaboration between the \acrfull{UFRJ} and CERN was the creation of Glance \cite{grael-tcc} in 2003. It was a technology which allowed members of the ATLAS experiment to create search interfaces on the web over multiple databases containing information about detector equipment and cables. It was later applied to other use cases, fetching different kinds of data from the experiments. With such relevance, the group of developers was named after Glance.
 
-As Glance increased its maturity curve, new demands appeared for front-end features and more complex management of the resources with specific rules from each experiment. In 2013, the team started the development of FENCE (Front-End Engine for Glance) \cite{lange-tcc}: a web application framework designed to be used as the base for various systems at CERN. With it, the Glance Team developed 20 systems responsible for managing equipment, members, publications, authors, shifts, institutions, and many other essential resources for the major experiments at CERN. The developers realised that FENCE-based applications were hard to maintain due to their monolithic and rigid architecture, needing to adapt to new scenarios and include new technologies from a fast-evolving software industry.
+As Glance increased its maturity curve, new demands appeared for front-end features and more complex management of the resources with specific rules from each experiment. In 2013, the team started the development of \acrfull{fence} \cite{lange-tcc}: a web application framework designed to be used as the base for various systems at CERN. With it, the Glance Team developed 20 systems responsible for managing equipment, members, publications, authors, shifts, institutions, and many other essential resources for the major experiments at CERN. The developers realised that FENCE-based applications were hard to maintain due to their monolithic and rigid architecture, needing to adapt to new scenarios and include new technologies from a fast-evolving software industry.
 
-This project started in January 2019, intending to expose publication data from the ATLAS Analysis system, developed and maintained by Glance Team, to the CERN Analysis Preservation group in a programmatic way via a REST API. The team quickly realised that such a solution could also be used as a starting point for breaking FENCE’s monolithic behaviour. In March 2019, a side project began to create a base structure for building APIs and decouple the front end from the rest of the source code.
+This project started in January 2019, intending to expose publication data from the ATLAS Analysis system, developed and maintained by Glance Team, to the CERN Analysis Preservation group in a programmatic way via a \acrshort{rest} \acrshort{api}. The team quickly realised that such a solution could also be used as a starting point for breaking FENCE’s monolithic behaviour. In March 2019, a side project began to create a base structure for building APIs and decouple the front end from the rest of the source code.
 
 \section{Justification}
 
@@ -29,7 +29,7 @@ The work done serves not only the developers of the Glance Team but also the 880
 
 \section{Goals}
 
-The current project aims to create a standard structure for the Glance Team to develop REST APIs for building information systems for CERN experiments. Addressing the major pain points while using FENCE, the desired characteristics of the new software architecture were chosen: usability, interoperability, maintainability, extensibility, reusability and testability \cite{richards-architecture}. 
+The current project aims to create a standard structure for the Glance Team to develop REST APIs for building information systems for CERN experiments. Addressing the major pain points while using FENCE, the desired characteristics of the new software architecture were chosen: usability, interoperability, maintainability, extensibility, reusability and testability \cite{richards-architecture}.
 
 Therefore, the project comprises the following tasks:
 \begin{itemize}
@@ -41,13 +41,13 @@ Therefore, the project comprises the following tasks:
 
 \section{Methodology}
 
-The work resulted from multiple side projects mixed with the need to share data with other groups and the development of modern web applications with the front end decoupled from the back end. Sharing data of systems already in production was the initial request and first step of the journey. New features were added to FENCE to facilitate the creation of query endpoints on top of the existing Object Relational Mapper (ORM) via JSON configuration files.
+The work resulted from multiple side projects mixed with the need to share data with other groups and the development of modern web applications with the front end decoupled from the back end. Sharing data of systems already in production was the initial request and first step of the journey. New features were added to FENCE to facilitate the creation of query endpoints on top of the existing \acrfull{orm} via \acrshort{json} configuration files.
 
 Afterwards, the challenge was to decouple the user interface from the business rules code, consume the new API to populate the browser pages with data, and send changes submitted via forms back to the server. By supporting write operations, APIs started to need to perform input validation and guard the domain rules invariants. FENCE was not designed for these use cases, and a study was done to propose a back-end structure that satisfied the architecture characteristics needs and relieved the major pain points caused by using the in-house framework.
 
 When the team decided to move away completely from FENCE, the initial focus was feature parity of critical parts that were before delivered by the framework. Later, improvements were made, and new functionalities were added. The benefits and drawbacks of FENCE were kept in mind, with similar solutions for what worked well and changes to what caused struggles to the team while developing the back end.
 
-All phases of the project followed the iterative process: after gathering the requirements, small solutions were built and released to be used by Glance developers. After, feedback was given on what could be added or improved on the solution, starting another development cycle. Quick iterations and interactions were possible because the project’s developers were part of the Glance team, working mostly in the same office. 
+All phases of the project followed the iterative process: after gathering the requirements, small solutions were built and released to be used by Glance developers. After, feedback was given on what could be added or improved on the solution, starting another development cycle. Quick iterations and interactions were possible because the project’s developers were part of the Glance team, working mostly in the same office.
 
 \section{Description}
 
