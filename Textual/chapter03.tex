@@ -3,7 +3,7 @@
 
 \section{Introduction}
 
-In March 2019, the Glance Team started to develop \textbf{Frapi} (\textbf{F}ENCE \textbf{R}EST \textbf{API}), a library to help developers address the need to expose data to CAP and other CERN services via REST APIs. Due to the nature of the problem, the first version aimed to make information available and did not focus on receiving and writing information.
+In March 2019, the Glance Team started to develop \textbf{\acrshort{frapi}} (\textbf{F}ENCE \textbf{R}EST \textbf{API}), a library to help developers address the need to expose data to CAP and other CERN services via REST APIs. Due to the nature of the problem, the first version aimed to make information available and did not focus on receiving and writing information.
 
 The idea was to create a solution that was part of FENCE, the framework used by all the team's systems at the time. Followed by FENCE principles, Frapi's initial release was based primarily on using JSON configuration files and FacTree integration. The following sections describe how the first version of Frapi was developed, the integration with FENCE, and the usage by Glance applications and external services.
 
@@ -33,7 +33,7 @@ For developers wishing to use the first version of Frapi to provide a REST API, 
     .3
     \vdots.
     .2 htaccess.
-    .2 
+    .2
     \vdots.
     }
 \end{minipage}
@@ -46,11 +46,11 @@ The file tree of the system should look like \autoref{fig:frapi-v1-directory-str
 \begin{listing}[H]
 \begin{minted}{php}
 <?php
- 
+
 require_once "./vendor/autoload.php";
-  
+
 $api = new \Fence\Frapi\Api("api.json");
- 
+
 $api->run();
 \end{minted}
 \caption{Script executed when any REST API request arrives at the server.}
@@ -81,7 +81,7 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . index.php [L]
- 
+
 # Enable authorization header
 RewriteCond %{HTTP:Authorization} ^(.*)
 RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
@@ -236,7 +236,7 @@ GET /api/tasks
 \subsection{Custom endpoints}
 \label{sec:custom-endpoints}
 
-By providing only FacTree endpoints, Frapi supported exclusively read operations. Clients could consume Glance data, but creating, updating and deleting resources was not yet supported. Since the in-house ORM did not fully support CRUD (Create, Read, Update, Delete) operations, Frapi needed another route creation method for the unsupported scenarios. The solution was to create custom endpoints where the developer could programmatically handle the request data and return the response. Due to the solution's flexibility, all CRUD operations could be supported.
+By providing only FacTree endpoints, Frapi supported exclusively read operations. Clients could consume Glance data, but creating, updating and deleting resources was not yet supported. Since the in-house ORM did not fully support \acrfull{crud} operations, Frapi needed another route creation method for the unsupported scenarios. The solution was to create custom endpoints where the developer could programmatically handle the request data and return the response. Due to the solution's flexibility, all CRUD operations could be supported.
 
 The definition of a custom endpoint on Frapi is done similarly to a FacTree endpoint: by creating a JSON configuration file. In this case, the code \autoref{code:custom-endpoint-json} exemplifies the two parameters needed: a class type and the class's namespace.
 
@@ -269,14 +269,14 @@ class CreateTask extends BaseEndpoint
             "/tasks",
             function () {
 			    $request = $this->getApi()->getRequest();
-			    
+
                 $newTask = $this->createTask($request);
-                
+
                 $this->getApi()->render(["task" => $newTask], 201);
             }
         );
     }
-    
+
     private function createTask($request)
     {
         // Crates task based on request data...
@@ -337,14 +337,14 @@ An environment file for a specific mode (e.g. \texttt{.env.production}) will tak
     \item \texttt{.env.[mode].local}
 \end{enumerate}
 
-Some environment variables, such as secrets, should not be committed to the version control system. For this case, an \texttt{.env.local} file should be used instead and ignored by VCS.
+Some environment variables, such as secrets, should not be committed to the version control system. For this case, an \texttt{.env.local} file should be used instead and ignored by \acrshort{vcs}.
 
 \section{Authentication and Authorisation}
 \label{sec:frapi-v1-auth}
 
 It is usual among software programs to limit actions according to the user roles. The same occurs on Glance applications. On Service Work, for example, only the Service Work Coordinator or the Resource Coordinator should be able to create and plan tasks, and only Project Leaders can assign members to a task. In this scenario, authentication and authorisation play a central role. The former verifies who the user is and determines whether they are who they claim to be. The latter verifies data the user can or cannot access and actions that are permitted \cite{auth0-authentication-authorization}. Usually, authentication occurs before authorisation.
 
-During the development of Frapi, CERN was changing its Single Sign-On (SSO) solution, transitioning from Shibboleth \cite{shibboleth-website} to Keycloak \cite{keycloak-website}. SSO affects how users are authenticated, and due to the duality of methods, Frapi supports both. To choose the authentication method, the application should define on the API configuration file a user class from Frapi's defaults \texttt{ShibbolethUser} and \texttt{KeycloakUser} or an extension of one of them.
+During the development of Frapi, CERN was changing its \acrfull{sso} solution, transitioning from Shibboleth \cite{shibboleth-website} to Keycloak \cite{keycloak-website}. SSO affects how users are authenticated, and due to the duality of methods, Frapi supports both. To choose the authentication method, the application should define on the API configuration file a user class from Frapi's defaults \texttt{ShibbolethUser} and \texttt{KeycloakUser} or an extension of one of them.
 
 \begin{listing}[htbp]
 \begin{minted}{json}
@@ -366,17 +366,17 @@ Both \texttt{KeycloakUser} and \texttt{ShibbolethUser} contain base user data su
 
 \subsection{Shibboleth authentication}
 
-Configured and used by default on Glance servers, the SSO solution dating from 2008 used the Shibboleth Service Provider module for Apache and Microsoft ADFS (Active Directory Federation Services) to authenticate users using a single platform \cite{shibboleth-article}. After authentication, variables were set with the information of the current user. When defined on the API configuration, the \texttt{ShibbolethUser} class reads the variables when it is instantiated. The e-groups in which the user participates are also set as environment variables and parsed by the user class.
+Configured and used by default on Glance servers, the SSO solution dating from 2008 used the Shibboleth Service Provider module for Apache and Microsoft \acrshort{adfs} (\acrlong{adfs}) to authenticate users using a single platform \cite{shibboleth-article}. After authentication, variables were set with the information of the current user. When defined on the API configuration, the \texttt{ShibbolethUser} class reads the variables when it is instantiated. The e-groups in which the user participates are also set as environment variables and parsed by the user class.
 
 With the first version of CERN SSO, the mechanism for authenticating HTTP API users was using cookies generated at CERN servers. This was an issue since the Glance APIs were meant to be used by clients worldwide via their browsers or other CERN apps, independently of being hosted or not at CERN servers. The Glance team made an early attempt to solve this issue by performing its authentication. This was not an ideal solution due to the lack of experience of the developers in this area with such security risks.
 
 \subsection{Keycloak authentication}
 
-Due to a 20-fold increase in Microsoft license costs, the MALT (Microsoft Alternatives) \cite{malt} \cite{malt-internal} \cite{malt-auth} project kicked off with one of its tasks to migrate CERN's Identity and Access Management solution, including single sign-on, to open source software. The chosen alternative was the Keycloak SSO, with a pilot release in 2019 \cite{keycloak-article}. It fitted Glance's needs, and the team was one of the early adopters of the service, developing the new API and back-end structures alongside the evolution of the Authorisation Service.
+Due to a 20-fold increase in Microsoft license costs, the \acrshort{malt} (\acrlong{malt}) \cite{malt} \cite{malt-internal} \cite{malt-auth} project kicked off with one of its tasks to migrate CERN's Identity and Access Management solution, including single sign-on, to open source software. The chosen alternative was the Keycloak SSO, with a pilot release in 2019 \cite{keycloak-article}. It fitted Glance's needs, and the team was one of the early adopters of the service, developing the new API and back-end structures alongside the evolution of the Authorisation Service.
 
-Different from Shibboleth, Glance systems should follow additional steps to use Keycloak. First, an application should be registered on the applications portal and enable OIDC (OpenID Connect) \cite{registering-application} \cite{cern-auth-oidc-guide}. The registration will result in a \textit{client ID} and a \textit{client secret} that should be included on an \texttt{.env.local} file under the \texttt{CLIENT\textunderscore ID} and \texttt{CLIENT\textunderscore SECRET} keys.
+Different from Shibboleth, Glance systems should follow additional steps to use Keycloak. First, an application should be registered on the applications portal and enable \acrshort{oidc} (\acrlong{oidc}) \cite{registering-application} \cite{cern-auth-oidc-guide}. The registration will result in a \textit{client ID} and a \textit{client secret} that should be included on an \texttt{.env.local} file under the \texttt{CLIENT\textunderscore ID} and \texttt{CLIENT\textunderscore SECRET} keys.
 
-API consumers acting on behalf of the user authenticates through the CERN Authorization Service, which verifies the user credentials. The client can use any of the OAuth grant types \cite{oauth-grant-type} in this step.  In case of success, the Authorization Service responds with an access token as a JSON Web Token (JWT). JWT is an open standard defined by RFC 7519 \cite{rfc-7519} for securely transmitting JSON objects between parties in a compact and self-contained way that can be used on HTTP environments \cite{jwt-introduction}. The tokens are composed of a header, payload and signature, each base64 encoded and separated by dots. The payload contains a JSON object with useful data about the user that can later be used for authorisation. The signature is the output of the encryption of the header and payload parts.
+API consumers acting on behalf of the user authenticates through the CERN Authorization Service, which verifies the user credentials. The client can use any of the OAuth grant types \cite{oauth-grant-type} in this step.  In case of success, the Authorization Service responds with an access token as a \acrfull{jwt}. JWT is an open standard defined by RFC 7519 \cite{rfc-7519} for securely transmitting JSON objects between parties in a compact and self-contained way that can be used on HTTP environments \cite{jwt-introduction}. The tokens are composed of a header, payload and signature, each base64 encoded and separated by dots. The payload contains a JSON object with useful data about the user that can later be used for authorisation. The signature is the output of the encryption of the header and payload parts.
 
 % TODO: fig exemplo jwt em b64
 
@@ -441,7 +441,7 @@ public function buildEndpoints()
 
 \subsection{User endpoint}
 
-With the decoupling of the front and back end, the user interfaces developed by Glance became separate applications and consumers of the team APIs. One of the first needs of the clients was to retrieve experiment or system-specific information about the current user that was not available via the authentication methods. 
+With the decoupling of the front and back end, the user interfaces developed by Glance became separate applications and consumers of the team APIs. One of the first needs of the clients was to retrieve experiment or system-specific information about the current user that was not available via the authentication methods.
 
 \begin{listing}[htbp]
 \begin{minted}{json}
@@ -495,7 +495,7 @@ class User extends \Fence\Frapi\Users\KeycloakUser
 	public function __construct($token)
 	{
 		parent::__construct($token);
-		
+
 		// Fetch Internal ID...
 	}
 
@@ -555,7 +555,7 @@ To address the issues above, Frapi implemented a new error handler \cite{frapi-e
 \label{code:error-500-body}
 \end{listing}
 
-To collect, manage and alert the developers about untreated exceptions, Frapi optionally supports Sentry \cite{sentry-about}. Sentry is a third-party error monitoring SaaS (Software as a Service) made available by the CERN IT \cite{sentry-cern}. To send exceptions to the tool, the API should be configured with the URL of a Sentry instance, as exemplified in code \autoref{code:sentry-config}.
+To collect, manage and alert the developers about untreated exceptions, Frapi optionally supports Sentry \cite{sentry-about}. Sentry is a third-party error monitoring \acrshort{saas} (\acrlong{saas}) made available by the CERN IT team \cite{sentry-cern}. To send exceptions to the tool, the API should be configured with the URL of a Sentry instance, as exemplified in code \autoref{code:sentry-config}.
 
 \begin{listing}[htbp]
 \begin{minted}{json}
@@ -571,7 +571,7 @@ To collect, manage and alert the developers about untreated exceptions, Frapi op
 \label{code:sentry-config}
 \end{listing}
 
-Software errors, however, are not exclusively made of unexpected exceptions. There are cases where the application validates user input, checks domain invariants and others. In these scenarios, it is important to inform the API client about the error cause. As a solution, Frapi supports custom errors thrown as an instance of the \texttt{Fence\textbackslash Frapi\textbackslash Exceptions\textbackslash BaseException} class. 
+Software errors, however, are not exclusively made of unexpected exceptions. There are cases where the application validates user input, checks domain invariants and others. In these scenarios, it is important to inform the API client about the error cause. As a solution, Frapi supports custom errors thrown as an instance of the \texttt{Fence\textbackslash Frapi\textbackslash Exceptions\textbackslash BaseException} class.
 
 \autoref{code:custom-error-example} exemplifies how to throw custom errors to be formatted by Frapi in a scenario where Service Work tasks can not be created on weekends and should not have an empty name. In case of any validation error, the \texttt{BaseException} is thrown, automatically caught by Frapi and returned to the client, following the JSON:API specification as illustrated on \autoref{code:custom-error-response-example}. Custom errors are not automatically logged and are not sent to Sentry.
 
