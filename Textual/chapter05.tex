@@ -116,7 +116,7 @@ Due to the breaking changes on route definitions and controller methods signatur
 
 \subsection{Error handling}
 
-The error middleware \cite{error-middleware} is similar to Frapi v1 (\autoref{sec:error-handling}), it catches all unhandled exceptions and formatts them into a machine and human-readable JSON response following the JSON:API specification \cite{json-api-error}. It also has optional logging via PSR-3 logger, debug mode which adds the error stack trace to the response and opt-in error dispatch to the Sentry \cite{sentry-about} \cite{sentry-php-sdk} as illustrated on the middleware usage example.
+The error middleware \cite{error-middleware} is similar to Frapi v1 (\autoref{sec:error-handling}), it catches all unhandled exceptions and formats them into a machine and human-readable JSON response following the JSON:API specification \cite{json-api-error}. It also has optional logging via PSR-3 logger, debug mode which adds the error stack trace to the response and opt-in error dispatch to Sentry \cite{sentry-about} \cite{sentry-php-sdk}, as illustrated on the middleware usage example.
 
 \begin{listing}[htbp]
 \begin{minted}[startinline]{php}
@@ -174,7 +174,7 @@ class TaskController
 	}
 }
 \end{minted}
-\caption{Example of how the user object can be retrieve while using the Keycloak middleware.}
+\caption{Example of how the user object can be retrieved while using the Keycloak middleware.}
 \label{code:get-user-example}
 \end{listing}
 
@@ -210,9 +210,9 @@ Authentication and authorisation exceptions are compatible with \texttt{glance-p
 
 \subsection{Logging}
 
-Logging had small changes compared to how it was done on Frapi. Since applications no longer depend on the FENCE, they cannot rely on the framework's logger. The team advises the usage of any implementation of the PSR-3 logger \cite{psr-3}. As default, Monolog package \cite{monolog}. It supports writing logs on files, like it was done on Frapi and FENCE but also allows sending logs to sockets, inboxes, databases and various web services on multiple formats.
+Logging had small changes compared to how it was done on Frapi. Since applications no longer depend on the FENCE, they cannot rely on the framework's logger. The team advises the usage of any implementation of the PSR-3 logger \cite{psr-3}. As default, Monolog package \cite{monolog}. It supports writing logs on files, like it was done on Frapi and FENCE, but also allows sending logs to sockets, inboxes, databases and various web services on multiple formats.
 
-A key difference between the PSR-3 logger and the FENCE logger is that the methods are not static. This demands explicitly declaring the logger as a dependency on each class but also allows the possibility of having multiple types of logging. \autoref{code:fence-logger-example} and \autoref{code:psr-3-example} illustrates the contrasts on the usage of FENCE and PSR-3 loggers.
+A key difference between the PSR-3 logger and the FENCE logger is that the methods are not static. This demands explicitly declaring the logger as a dependency on each class but also allows the possibility of having multiple types of logging. \autoref{code:fence-logger-example} and \autoref{code:psr-3-example} illustrate the contrasts on the usage of FENCE and PSR-3 loggers.
 
 \begin{listing}[htbp]
 \begin{minted}[startinline]{php}

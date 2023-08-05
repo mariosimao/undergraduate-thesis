@@ -11,9 +11,9 @@ The idea was to create a solution that was part of FENCE, the framework used by 
 
 A fundamental task of a REST API server is routing, in other words, deciding which parts of the program should be executed given a request to a specific endpoint. It was the skeleton of the Frapi module with the other features developed around it. Knowing the importance of routing and after learning from past mistakes of creating in-house solutions and reinventing the wheel, it was decided to use an already developed solution and extend it according to the custom needs of Glance systems.
 
-The constraints formulated by the team were that it should be a library with complete documentation and good community support. Those requirements aimed to rely on battle-tested software, increasing the quality of the final product and reducing the learning curve due to extensive documentation and plugins, examples and answers from the community. Additionally, the package should support PHP 5.4, the current version of the programming language used by FENCE on production at the time.
+The constraints formulated by the team were that it should be a library with complete documentation and good community support. Those requirements aimed to rely on a highly used software, increasing the quality of the final product and reducing the learning curve due to extensive documentation and plugins, examples and answers from the community. Additionally, the package should support PHP 5.4, the current version of the programming language used by FENCE on production at the time.
 
-With the constraints in mind, Slim was the chosen library among Lumen \cite{lumen-website}, Mezzio\cite{mezzio-website}, Laravel\cite{laravel-website} and Symfony \cite{symfony-website}. It is a PHP micro framework that helps developers quickly write simple APIs \cite{slim-website}. Micro framework means that it does not include many features of full-fledged frameworks, focusing on receiving HTTP requests, routing and returning an HTTP response. Of the considered packages, Slim had more usage by other projects and no dependency on full-stack frameworks, such as Laravel \cite{laravel-website} and Symfony \cite{symfony-website}. Usage and community support were measured with the number of downloads on the Composer package manager \cite{composer-website}, GitHub stars and questions with an answer on StackOverflow.
+With the constraints in mind, Slim \cite{slim-website} was the chosen library among Lumen \cite{lumen-website}, Mezzio\cite{mezzio-website}, Laravel\cite{laravel-website} and Symfony \cite{symfony-website}. It is a PHP micro framework that helps developers quickly write simple APIs. Micro framework means that it does not include many features of full-fledged frameworks, focusing on receiving HTTP requests, routing and returning an HTTP response. Of the considered packages, Slim \cite{slim-website} had more usage by other projects and no dependency on full-stack frameworks, such as Laravel \cite{laravel-website} and Symfony \cite{symfony-website}. Usage and community support were measured with the number of downloads on the Composer package manager \cite{composer-website}, GitHub stars and questions with an answer on StackOverflow.
 
 Even though Slim was already on version 3, Frapi used the previous library version since the new one did not support PHP 5.4. Considering that was on the team's plans to update to PHP 7 on the FENCE systems, an abstraction was created on top of Slim 2 \cite{slim-2-doc} to emulate the interfaces from Slim 3 and ease a future migration.
 
@@ -122,7 +122,7 @@ Frapi v1 supports creating FacTree-based and custom endpoints by defining them o
 
 At first, Frapi supported the FENCE micro-ORM by providing automatic routes to all FacTree models. However, it became an issue due to the lack of control over what was being exposed to an external system. The solution was to define, as endpoint settings, the resources to be exposed. Glance developers could expose information to be consumed by external systems by configuring routes without writing a single PHP line of code.
 
-Using Service Work as an example, a collaboration \texttt{Task} represents work to be done during the year. Each task has one \texttt{Activity}, which is a way to categorise them as illustrated in figure \autoref{fig:class-diagram-sw-task}. With a FacTree model already in place, a FENCE developer can expose task data on a new route by adding an endpoint setting as exemplified by \autoref{code:task-factree-endpoint-settings}.
+Using Service Work as an example, a collaboration \texttt{Task} represents work to be done during the year. Each task has one \texttt{Activity}, which is a way to categorise them as illustrated in \autoref{fig:class-diagram-sw-task}. With a FacTree model already in place, a FENCE developer can expose task data on a new route by adding an endpoint setting as exemplified by \autoref{code:task-factree-endpoint-settings}.
 
 \begin{figure}[htbp]
   \centering
@@ -165,7 +165,7 @@ Using Service Work as an example, a collaboration \texttt{Task} represents work 
 
 The parameter \texttt{type} indicates Frapi to interpret the settings as a FacTree endpoint. The URI path of the route is defined on \texttt{path}. In this case, a client can request a list of all tasks by sending a \texttt{GET} request to https://alice-glance.cern.ch/service-work/api/tasks.
 
-The data returned by the endpoint and FacTree are configured under the \texttt{factory} key.  The combination of \texttt{name} and \texttt{path} define the factory file and its path, meaning that Frapi will try to find the FacTree definitions on \texttt{api/src/factories/sw-task.json} (\autoref{fig:frapi-v1-factree-dir}). The \texttt{order} parameter configures which fields are returned on the HTTP response. In the example, the \texttt{/tasks} endpoint returns only the task's name, description and the name of the activity. External URL and class information are hidden from the API consumer. Task and activity IDs are also returned by default.
+The data returned by the endpoint and FacTree are configured under the \texttt{factory} key.  The combination of \texttt{name} and \texttt{path} defines the factory file and its path, meaning that Frapi will try to find the FacTree definitions on \texttt{api/src/factories/sw-task.json} (\autoref{fig:frapi-v1-factree-dir}). The \texttt{order} parameter configures which fields are returned on the HTTP response. In the example, the \texttt{/tasks} endpoint returns only the task's name, description and the name of the activity. External URL and class information are hidden from the API consumer. Task and activity IDs are also returned by default.
 
 \begin{figure}
 \centering
@@ -297,7 +297,7 @@ To address the issue of using global variables described in \autoref{sec:global-
 \begin{minted}[startinline]{php}
 $databasePassword = getenv("DB_PASSWORD");
 \end{minted}
-\caption{Example of retrienving an environment variable on PHP.}
+\caption{Example of retrieving an environment variable on PHP.}
 \label{code:getenv-php}
 \end{listing}
 
@@ -337,14 +337,14 @@ An environment file for a specific mode (e.g. \texttt{.env.production}) will tak
     \item \texttt{.env.[mode].local}
 \end{enumerate}
 
-Some environment variables, such as secrets, should not be committed to the version control system. For this case, a \texttt{.env.local} file should be used instead and ignored by the VCS.
+Some environment variables, such as secrets, should not be committed to the version control system. For this case, an \texttt{.env.local} file should be used instead and ignored by VCS.
 
 \section{Authentication and Authorisation}
 \label{sec:frapi-v1-auth}
 
 It is usual among software programs to limit actions according to the user roles. The same occurs on Glance applications. On Service Work, for example, only the Service Work Coordinator or the Resource Coordinator should be able to create and plan tasks, and only Project Leaders can assign members to a task. In this scenario, authentication and authorisation play a central role. The former verifies who the user is and determines whether they are who they claim to be. The latter verifies data the user can or cannot access and actions that are permitted \cite{auth0-authentication-authorization}. Usually, authentication occurs before authorisation.
 
-During the development of Frapi, CERN was changing its Single Sign-On (SSO) solution, transitioning from Shibboleth \cite{shibboleth-website} to Keycloak \cite{keycloak-website}. The SSO affects how users are authenticated, and due to the duality of methods, Frapi supports both. To choose the authentication method, the application should define on the API configuration file a user class from Frapi's defaults \texttt{ShibbolethUser} and \texttt{KeycloakUser} or an extension of one of them.
+During the development of Frapi, CERN was changing its Single Sign-On (SSO) solution, transitioning from Shibboleth \cite{shibboleth-website} to Keycloak \cite{keycloak-website}. SSO affects how users are authenticated, and due to the duality of methods, Frapi supports both. To choose the authentication method, the application should define on the API configuration file a user class from Frapi's defaults \texttt{ShibbolethUser} and \texttt{KeycloakUser} or an extension of one of them.
 
 \begin{listing}[htbp]
 \begin{minted}{json}
@@ -362,19 +362,19 @@ During the development of Frapi, CERN was changing its Single Sign-On (SSO) solu
 % \label{}
 \end{listing}
 
-Both \texttt{KeycloakUser} and \texttt{ShibbolethUser} contains base user data such as CERN Person ID, name, email and username. CERN e-groups are also supported but fetched differently in each authentication scenario.
+Both \texttt{KeycloakUser} and \texttt{ShibbolethUser} contain base user data such as CERN Person ID, name, email and username. CERN e-groups are also supported but fetched differently in each authentication scenario.
 
 \subsection{Shibboleth authentication}
 
 Configured and used by default on Glance servers, the SSO solution dating from 2008 used the Shibboleth Service Provider module for Apache and Microsoft ADFS (Active Directory Federation Services) to authenticate users using a single platform \cite{shibboleth-article}. After authentication, variables were set with the information of the current user. When defined on the API configuration, the \texttt{ShibbolethUser} class reads the variables when it is instantiated. The e-groups in which the user participates are also set as environment variables and parsed by the user class.
 
-With the first version of CERN SSO, the mechanism for authenticating HTTP API users was using cookies generated at CERN servers. This was an issue since the Glance APIs were meant to be used by clients worldwide via their browsers or other CERN apps, independently of being hosted or not at CERN servers. The Glance team made an early attempt to solve this issue by performing its authentication. This was not an ideal solution since the lack of experience of the developers in this area with such security risks.
+With the first version of CERN SSO, the mechanism for authenticating HTTP API users was using cookies generated at CERN servers. This was an issue since the Glance APIs were meant to be used by clients worldwide via their browsers or other CERN apps, independently of being hosted or not at CERN servers. The Glance team made an early attempt to solve this issue by performing its authentication. This was not an ideal solution due to the lack of experience of the developers in this area with such security risks.
 
 \subsection{Keycloak authentication}
 
 Due to a 20-fold increase in Microsoft license costs, the MALT (Microsoft Alternatives) \cite{malt} \cite{malt-internal} \cite{malt-auth} project kicked off with one of its tasks to migrate CERN's Identity and Access Management solution, including single sign-on, to open source software. The chosen alternative was the Keycloak SSO, with a pilot release in 2019 \cite{keycloak-article}. It fitted Glance's needs, and the team was one of the early adopters of the service, developing the new API and back-end structures alongside the evolution of the Authorisation Service.
 
-Different from Shibboleth, Glance systems should follow additional steps to use Keycloak. First, an application should be registered on the applications portal and enable OIDC (OpenID Connect) \cite{registering-application} \cite{cern-auth-oidc-guide}. The registration will result in a \textit{client ID} and a \textit{client secret} that should be included on a \texttt{.env.local} file under the \texttt{CLIENT\textunderscore ID} and \texttt{CLIENT\textunderscore SECRET} keys.
+Different from Shibboleth, Glance systems should follow additional steps to use Keycloak. First, an application should be registered on the applications portal and enable OIDC (OpenID Connect) \cite{registering-application} \cite{cern-auth-oidc-guide}. The registration will result in a \textit{client ID} and a \textit{client secret} that should be included on an \texttt{.env.local} file under the \texttt{CLIENT\textunderscore ID} and \texttt{CLIENT\textunderscore SECRET} keys.
 
 API consumers acting on behalf of the user authenticates through the CERN Authorization Service, which verifies the user credentials. The client can use any of the OAuth grant types \cite{oauth-grant-type} in this step.  In case of success, the Authorization Service responds with an access token as a JSON Web Token (JWT). JWT is an open standard defined by RFC 7519 \cite{rfc-7519} for securely transmitting JSON objects between parties in a compact and self-contained way that can be used on HTTP environments \cite{jwt-introduction}. The tokens are composed of a header, payload and signature, each base64 encoded and separated by dots. The payload contains a JSON object with useful data about the user that can later be used for authorisation. The signature is the output of the encryption of the header and payload parts.
 
@@ -384,7 +384,7 @@ After receiving the access token, the client should send it on every request to 
 
 % TODO: fig diagrama auth
 
-When configured for Keycloak, Frapi reads the access token from the request header and uses the signature to verify if the message was not modified and check against CERN Authorization Service, the true issuer of the JWT. These two steps guarantee the security of the API since no attacker can create fake tokens or change existing ones. After successful validation, the class \texttt{KeycloakUser} is instantiated with the data of the JWT payload and made available to be used by the API developers, including information about user roles. If an invalid token is provided, the API responds with \texttt{401} HTTP status code and an error message.
+When configured for Keycloak, Frapi reads the access token from the request header and uses the signature to verify if the message was not modified and check against CERN Authorization Service, the true issuer of JWT. These two steps guarantee the security of the API since no attacker can create fake tokens or change existing ones. After successful validation, the class \texttt{KeycloakUser} is instantiated with the data of the JWT payload and made available to be used by the API developers, including information about user roles. If an invalid token is provided, the API responds with \texttt{401} HTTP status code and an error message.
 
 The new SSO solution, however, did not support e-groups, a fundamental information used by Glance for authorisation. To bypass this situation, the class \texttt{KeycloakUser} gets e-group information on demand via CERN WebServices. To use this feature, Glance systems should define the \texttt{WEBSERVICES\textunderscore LOGIN} and \texttt{WEBSERVICES\textunderscore PWD} environment variables with the credentials of the e-groups web service.
 
@@ -511,7 +511,7 @@ class User extends \Fence\Frapi\Users\KeycloakUser
 
 \subsection{Logging}
 
-In multi-user software, keeping a log of events such as errors, warnings, or other information is important to monitor the system's operation, debug problems and audit \cite{logging-wikipedia}. For the same reasons, having a logging mechanism that worked for Frapi was essential. The chosen solution was FENCE Logger due to the fact of being independent of the framework, worked well on previous applications and was already known by the Glance Team. The \texttt{Fence\\Logger} is a simple class with static methods (\autoref{code:logger-php-example}) for different log levels (debug, info, notice, warning, error, critical, alert and emergency) which writes messages as new lines on logfiles (\autoref{code:log-line-example}).
+In multi-user software, keeping a log of events such as errors, warnings, or other information is important to monitor the system's operation, debug problems and audit \cite{logging-wikipedia}. For the same reasons, having a logging mechanism that worked for Frapi was essential. The chosen solution was FENCE Logger due to the fact of being independent of the framework, worked well on previous applications and was already known by the Glance Team. The \texttt{Fence\textbackslash Logger} is a simple class with static methods (\autoref{code:logger-php-example}) for different log levels (debug, info, notice, warning, error, critical, alert and emergency) which writes messages as new lines on logfiles (\autoref{code:log-line-example}).
 
 \begin{listing}[htbp]
 \begin{minted}[startinline]{php}
@@ -529,7 +529,7 @@ In multi-user software, keeping a log of events such as errors, warnings, or oth
 \label{code:log-line-example}
 \end{listing}
 
-Like FENCE, when a Frapi receives a request, it writes the first logs on the \texttt{api.log} file. After authentication, all the subsequent messages are written on a file named with the CERN username of the current user. The path where logfiles are saved is defined via the \texttt{LOG\textunderscore PATH} environment variable. To avoid large logfiles, Glance machines are configured with Logrotate \cite{logrotate-man} to chunks and compress old logs and facilitate the reading of recent ones.
+Like FENCE, when Frapi receives a request, it writes the first logs on the \texttt{api.log} file. After authentication, all the subsequent messages are written on a file named with the CERN username of the current user. The path where logfiles are saved is defined via the \texttt{LOG\textunderscore PATH} environment variable. To avoid large logfiles, Glance machines are configured with Logrotate \cite{logrotate-man} to chunks and compress old logs and facilitate the reading of recent ones.
 
 \subsection{Error handling}
 \label{sec:error-handling}
@@ -647,7 +647,7 @@ $this->getSlim()->post("/tasks", function () {
 
 The Middleware pattern, also known as the Chain of Responsibility \cite{chain-of-responsibility}, is a design pattern in which receiver objects, called middleware, are linked as a chain. Each receiver processes the message and calls the next one. Middleware can also interrupt the chain if needed, for example, when an error occurs. Slim supports the pattern \cite{slim-middleware-doc} and it is widely used by Frapi to orchestrate some of its core features via the Setup, Authentication and Endpoints Builder middleware.
 
-Figure \autoref{fig:frapi-internal-sequence} is a simplified sequence diagram of how Frapi works internally. When a client sends an HTTP request to the API server, Frapi is instantiated, loads files and setups essential services such as logger and error handler. Then, the middleware chain is called, starting with the Setup and following to Authentication and Endpoints Builder. After the sequence of receivers has finished their job, Slim maps the requested route to the correct function, which reads the request and sets the response object on Frapi, which outputs it to the server. Finally, the server returns an HTTP response to the API consumer.
+\autoref{fig:frapi-internal-sequence} is a simplified sequence diagram of how Frapi works internally. When a client sends an HTTP request to the API server, Frapi is instantiated, loads files and setups essential services such as logger and error handler. Then, the middleware chain is called, starting with the Setup and following to Authentication and Endpoints Builder. After the sequence of receivers has finished their job, Slim maps the requested route to the correct function, which reads the request and sets the response object on Frapi, which outputs it to the server. Finally, the server returns an HTTP response to the API consumer.
 
 \begin{figure}[htbp]
   \centering

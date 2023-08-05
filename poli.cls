@@ -450,7 +450,7 @@ top=2.5cm,bottom=2.5cm,left=3.0cm,right=3.0cm]{geometry}
 					\end{minipage}
 				\end{flushright}}}
 				
-				\newenvironment{abstract}{%
+				\newenvironment{foreignabstract}{%
 					\clearpage
 					\thispagestyle{plain}
 					\abstract@toptext\par
@@ -472,7 +472,7 @@ top=2.5cm,bottom=2.5cm,left=3.0cm,right=3.0cm]{geometry}
 					\vspace*{2mm}
 					\noindent\local@deptstring: \local@deptname\par
 					\vspace*{7mm}}{\vspace*{\fill}}
-				\newenvironment{foreignabstract}{%
+				\newenvironment{abstract}{%
 					\clearpage
 					\thispagestyle{plain}
 					\begin{otherlanguage}{english}

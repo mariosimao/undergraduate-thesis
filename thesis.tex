@@ -36,6 +36,7 @@
 % Autoref Chapters with capital letter
 \addto\extrasenglish{
   \def\chapterautorefname{Chapter}
+  \def\sectionautorefname{Section}
 }
 
 % Reference numbers
@@ -107,10 +108,18 @@
 \usepackage{dirtree}
 
 % Numero em subsubsection
-\setcounter{secnumdepth}{3}
+% \setcounter{secnumdepth}{3}
 
 % Custom line heigh 
 \usepackage{setspace}
+
+% Acronyms
+\usepackage[acronym]{glossaries}
+
+\makeglossaries
+\newacronym{gcd}{GCD}{Greatest Common Divisor}
+\newacronym{lcm}{LCM}{Least Common Multiple}
+
 
 % Bar chart
 % \usepackage{pgfplots}
@@ -124,7 +133,7 @@
 
 \begin{document}
   \title{Architectural Patterns to Support the Development of REST APIs at CERN}
-  \foreigntitle{Architectural Patterns to Support the Development of REST APIs at CERN}
+  \foreigntitle{Padrões arquiteturais para apoiar o desenvolvimento de REST APIs no CERN}
   \author{Mario}{Günter Simão}
   \advisor{Prof.}{Flávio Luis}{de Mello}{D.Sc.}
   %\coadvisor{Prof.}{Nome}{Sobrenome}{D.Sc.}
@@ -150,8 +159,7 @@
   \listoffigures
   \listoftables
   \listoflistings
-  \printlosymbols
-  \printloabbreviations
+  \printglossary[type=\acronymtype]
 
   \mainmatter
     \include{Textual/chapter01}

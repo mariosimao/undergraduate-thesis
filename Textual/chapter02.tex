@@ -49,7 +49,7 @@ Once a page request arrives at the server, FENCE is initialised. A single comman
 
 Next, the application adds content to the page response. In this example, a menu is added by providing the path of a JSON configuration file with all the desired titles, labels and links from the menu. FENCE also supports adding complex search interfaces, forms, profile pages and other custom content.
 
-The \texttt{render} method outputs the complete response HTML, sending it via HTTP to the end user browser to display the application's page. Finally, any unhandled exception is caught and handled by logging the message into the user's log file, emailing the responsible developers, and displaying a user-friendly error page.
+The \texttt{render} method outputs the complete HTML, sending it via an HTTP response to the end user browser to display the application's page. Finally, any unhandled exception is caught and handled by logging the message into the user's log file, emailing the responsible developers, and displaying a user-friendly error page.
 
 \section{Drawbacks of an in-house framework}
 
@@ -57,7 +57,7 @@ At least twenty systems were developed using FENCE \cite{pinhao-tcc} and are par
 
 \subsection{Installation}
 
-The dependencies requirements of FENCE systems were not well defined and dispersed. For example, the own framework was referenced in a combination of Composer (a PHP package manager \cite{composer-website}) import and an Apache configuration. Third-party libraries and installation scripts were defined on multiple package managers and task runner tools such as Composer, npm \cite{npm-website}, Bower \cite{bower-website} and Grunt\cite{grunt-website}. Application configurations were also split in FENCE's \texttt{configuration.json}, Apache and PHP configuration files, each in separate directories on the file system and not available on the version control system.
+The dependencies requirements of FENCE systems were not well defined and dispersed. For example, the framework itself was referenced in a combination of Composer (a PHP package manager \cite{composer-website}) import and an Apache configuration. Third-party libraries and installation scripts were defined on multiple package managers and task runner tools such as Composer, npm \cite{npm-website}, Bower \cite{bower-website} and Grunt\cite{grunt-website}. Application configurations were also split in FENCE's \texttt{configuration.json}, Apache and PHP configuration files, each in separate directories on the file system and not available on the version control system.
 
 FENCE needed to be better decoupled from the database, being highly dependent on a connection to specific Oracle databases with access to CERN's Human Resources data. Together with the characteristics described in the previous paragraph, applications built with the framework were generally hard to install. Glance Team members had to develop the applications on CERN servers since the long list of dependencies and configurations took much work to replicate locally. Developing remotely was not ideal, especially for the Brazilian students part of the team, who had to depend on unstable SSH connections to computers in Switzerland, significantly increasing latency and development speed. 
 
@@ -67,7 +67,7 @@ Another issue brought about by the FENCE installation was the deployment to prod
 
 Due to the characteristics of the collaboration between students of UFRJ and CERN, the Glance Team has a high turnover of developers, with most of the members being replaced every two years by new ones, often on their first work experience. It is then necessary for the applications to provide a low learning curve for the new group, meaning that they should learn fast and have enough time to contribute by creating new systems and features \cite{de-jesus-tcc}.
 
-Learning FENCE, however, was slow. The lack of documentation allied with magic methods and hidden coupling on the framework were a bottleneck on the first step of learning FENCE. The alternative options were to learn by studying examples of existing systems and asking senior colleagues for guidance, which could have been more time-efficient. It took 6 to 12 months for new members to have intermediary knowledge of the framework and build significant contributions.
+Learning FENCE, however, was slow. The lack of documentation allied with hidden coupling on the framework were a bottleneck on the first step of learning FENCE. The alternative options were to learn by studying examples of existing systems and asking senior colleagues for guidance, which could have been more time-efficient. It took 6 to 12 months for new members to have intermediary knowledge of the framework and build significant contributions.
 
 \subsection{Reinventing the wheel}
 
@@ -94,7 +94,7 @@ In an ideal environment, the issues listed could be solved with some effort from
 
 Some of the issues of FENCE usage could be solved if both the framework and its dependents had automated tests. Early testing brings to light multiple problems before deploying a program, such as architectural flaws, poor design decisions, incorrect functionality, security vulnerabilities and scalability issues \cite{ibm-software-testing}. Software without tests usually is not easily maintained. It is prone to accumulate technical debt since the impact of changes and new features is hard to predict as the system evolves.
 
-In 2018, an effort was made to add tests to applications created by the Glance Team \cite{alves-tcc}. However, it was not trivial due to the design flaws of FENCE and the lack of isolation between the systems and the framework. As described in previous sections, FENCE classes were highly coupled with external resources such as database connection, configurations on the filesystem, user information from CERN Single Sign-On and HTML output. The coupling was the root cause for the difficulty in writing tests since it took considerable work to set up a test environment by mocking all the resources and not being able to verify the behaviour of the software in small units. The fact that applications were not isolated from FENCE resulted in the same dependency on resources and, therefore, difficulty writing tests.
+In 2018, an effort was made to add tests to applications created by the Glance Team \cite{alves-tcc}. However, it was not trivial due to the design flaws of FENCE and the lack of isolation between the systems and the framework. As described in previous sections, FENCE classes were highly coupled with external resources such as database connection, configurations on the filesystem, user information from CERN Single Sign-On and HTML output. The coupling was the root cause for the difficulty in writing tests since it took considerable work to set up a test environment by mocking all the resources and not being able to verify the behaviour of the software in small units. The fact that applications were not isolated from FENCE resulted in the same dependency on resources and, therefore, struggle in writing tests.
 
 \section{REST API}
 
