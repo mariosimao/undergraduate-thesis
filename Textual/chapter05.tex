@@ -3,7 +3,7 @@
 
 \section{Introduction}
 
-Since Frapi is a FENCE module, every Glance application that uses it should have a complete installation of the in-house framework. New user interfaces were no longer built with the framework. FacTree and Database Manager were replaced by other ORMs and PHP PDO \cite{php-pdo-doc}. Step by step, new systems were not using FENCE core features, and the dependency on the framework was solely to use Frapi and Logger.
+Since Frapi is a FENCE module, every Glance application that uses it should have a complete installation of the in-house framework. New user interfaces were no longer built with the framework. FacTree and Database Manager were replaced by other ORMs and PHP \acrshort{pdo} \cite{php-pdo-doc}. Step by step, new systems were not using FENCE core features, and the dependency on the framework was solely to use Frapi and Logger.
 
 With the clear difference in use cases and lack of internal dependency, the first idea was to move Frapi from FENCE into a separate library. However, the team noticed that Frapi had different responsibilities, such as routing, authentication, authorisation, logger, request body validation, CORS, and error handler. It has become something similar to what was being avoided when moving out of Fence: an in-house framework disconnected from the PHP community libraries, standards and modern practices. To avoid the creation of a new framework, in December 2020, a solution was proposed to maximise the usage of third-party libraries to handle infrastructure problems and to split custom solutions into small separate libraries which should be opt-in, replaceable and could independently evolve. This proposal culminates on the end of new developments on Frapi since each solution would be deployed separately without needing a central library. The Frapi module remains at the FENCE framework to allow backward compatibility with existing Glance REST APIs.
 
@@ -18,7 +18,7 @@ From the 14 accepted PSRs \cite{fig-website-psrs}, the Logger (PSR-3 \cite{psr-3
 \section{Independent libraries}
 \label{sec:independent-libs}
 
-The Middleware Pattern (\autoref{sec:middleware}) was a good candidate for dealing with authentication, authorisation, request validation, Cross-Origin Resource Sharing (CORS) \cite{cors}, and error handler. Each responsibility is a different middleware on a separate library. Routing, CORS, and logging are shared infrastructure problems of multiple PHP applications and could be solved by well-supported third-party libraries. The following subsections will describe some libraries created or adopted to solve the need for creating Glance RESTful APIs.
+The Middleware Pattern (\autoref{sec:middleware}) was a good candidate for dealing with authentication, authorisation, request validation, \acrfull{cors} \cite{cors}, and error handler. Each responsibility is a different middleware on a separate library. Routing, CORS, and logging are shared infrastructure problems of multiple PHP applications and could be solved by well-supported third-party libraries. The following subsections will describe some libraries created or adopted to solve the need for creating Glance RESTful APIs.
 
 \subsection{Routing}
 
@@ -61,7 +61,7 @@ class TaskRoutes
 	{
 		$app->get("/tasks", [TaskController::class, "findAll"]);
         $app->post("/tasks", [TaskController::class, "register"]);
-        
+
         $app->get("/tasks/{taskId}", [TaskController::class, "findById"]);
         $app->put("/tasks/{taskId}", [TaskController::class, "update"]);
         $app->delete("/tasks/{taskId}", [TaskController::class, "remove"]);
@@ -101,7 +101,7 @@ class TaskController
 
 		$responseBody = json_encode([ "task" => $task ]);
 		$response->getBody()->write($body);
-	
+
 		return $response;
 	}
 }
@@ -124,7 +124,7 @@ $errorMiddleware = ErrorMiddleware::create()
 	->setLogger($logger)  // Optional. Accepts any PSR-3 logger
 	->debugMode(true)     // Optional. Set to false on production
 	->useSentry();        // Optional. Sentry SDK must be installed
-	
+
 $app->add(/* other middlewares */);
 $app->add($errorMiddleware);
 
@@ -184,7 +184,7 @@ The authorisation is available on the \texttt{glance-project/keycloak-middleware
 \begin{minted}[startinline]{php}
 <?php
 
-class TaskRoutes 
+class TaskRoutes
 {
 	public static function addRoutes(App $app)
 	{
@@ -206,7 +206,7 @@ class TaskRoutes
 % \label{}
 \end{listing}
 
-Authentication and authorisation exceptions are compatible with \texttt{glance-project/error-middleware} and can be formatted according to the JSON:API specification if the library is set up by the application, responding with \texttt{401} \texttt{403} HTTP status respectively. 
+Authentication and authorisation exceptions are compatible with \texttt{glance-project/error-middleware} and can be formatted according to the JSON:API specification if the library is set up by the application, responding with \texttt{401} \texttt{403} HTTP status respectively.
 
 \subsection{Logging}
 
