@@ -99,6 +99,7 @@
 \AtEndEnvironment{listing}{\vspace{-10pt}}
 \providecommand*{\listingautorefname}{Algorithm}
 \renewcommand\listingscaption{Algorithm}
+\renewcommand{\listoflistingscaption}{List of Algorithms}
 \makeatletter
 \@addtoreset{listing}{chapter}
 \makeatother
@@ -114,7 +115,7 @@
 \usepackage{setspace}
 
 % Acronyms
-\usepackage[acronym]{glossaries}
+\usepackage[acronym,toc]{glossaries}
 
 \makeglossaries
 % \newacronym{lcm}{LCM}{Least Common Multiple}
@@ -192,6 +193,8 @@
   \tableofcontents
   \listoffigures
   \listoftables
+  \clearpage
+  \addcontentsline{toc}{chapter}{List of Algorithms}
   \listoflistings
   \printglossary[type=\acronymtype]
 
