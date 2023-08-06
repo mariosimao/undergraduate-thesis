@@ -49,7 +49,7 @@ Once a page request arrives at the server, FENCE is initialised. A single comman
 
 Next, the application adds content to the page response. In this example, a menu is added by providing the path of a JSON configuration file with all the desired titles, labels and links from the menu. FENCE also supports adding complex search interfaces, forms, profile pages and other custom content.
 
-The \texttt{render} method outputs the complete HTML, sending it via an \acrshort{HTTP} response to the end user browser to display the application's page. Finally, any unhandled exception is caught and handled by logging the message into the user's log file, emailing the responsible developers, and displaying a user-friendly error page.
+The \texttt{render} method outputs the complete HTML, sending it via an \acrshort{http} response to the end user browser to display the application's page. Finally, any unhandled exception is caught and handled by logging the message into the user's log file, emailing the responsible developers, and displaying a user-friendly error page.
 
 \section{Drawbacks of an in-house framework}
 

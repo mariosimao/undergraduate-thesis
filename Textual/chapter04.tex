@@ -60,7 +60,7 @@ class TaskController
 	{
 		$request = $api->getRequest();
 		// Find task...
-		
+
 		$response = $api->getResponse();
 		// Write response...
 
@@ -144,7 +144,7 @@ $controller->registerTask($api);
 \label{code:controller-call}
 \end{listing}
 
-Take \autoref{code:controller-with-dependencies} as an example, which uses the dependency injection (DI) \cite{php-the-right-way-di} pattern, which removes hard-coded dependencies, making it possible to replace them as desired. The controller has two dependencies (database connection and email service) at the constructor level which Frapi would need to resolve somehow similar to \autoref{code:controller-with-dependencies-call}. Without any hints, it is not possible for Frapi to instantiate the dependencies, and also their own dependency tree, to call the controllers.
+Take \autoref{code:controller-with-dependencies} as an example, which uses the \acrfull{di} \cite{php-the-right-way-di} pattern, which removes hard-coded dependencies, making it possible to replace them as desired. The controller has two dependencies (database connection and email service) at the constructor level which Frapi would need to resolve somehow similar to \autoref{code:controller-with-dependencies-call}. Without any hints, it is not possible for Frapi to instantiate the dependencies, and also their own dependency tree, to call the controllers.
 
 \begin{listing}[htbp]
 \begin{minted}[startinline]{php}
@@ -177,7 +177,7 @@ $controller = new TaskController($connection, $emailService);
 \label{code:controller-with-dependencies-call}
 \end{listing}
 
-To address the need for automatically injecting dependencies, the second version of Frapi introduced support for DI containers. The container is a tool to make the injection more practical by letting the application define how classes and interfaces should be created and by instantiating and injecting them. It was decided not to rely on any specific third-party tool but instead use PSR-11 \cite{psr-11} containers. PHP Standard Recommendations (PSRs) are a set of interfaces created by the Framework Interoperability Group (FIG) \cite{fig-website} to standardise the commonalities between established PHP projects. All the major PHP DI container libraries follow the container interface from PSR-11, allowing Frapi applications to choose between a wide range of tools according to their needs.
+To address the need for automatically injecting dependencies, the second version of Frapi introduced support for DI containers. The container is a tool to make the injection more practical by letting the application define how classes and interfaces should be created and by instantiating and injecting them. It was decided not to rely on any specific third-party tool but instead use PSR-11 \cite{psr-11} containers. \acrlong{psr} (\acrshort{psr}s) are a set of interfaces created by the \acrfull{fig} \cite{fig-website} to standardise the commonalities between established PHP projects. All the major PHP DI container libraries follow the container interface from PSR-11, allowing Frapi applications to choose between a wide range of tools according to their needs.
 
 Frapi uses the DI container provided by the application to create the controllers. The container is sent to Frapi via the texttt{setContainer()} method as shown on \autoref{code:set-container-example}. PHP-DI \cite{php-di} is used in the example, but any other PSR-11 container could be used.
 
@@ -220,7 +220,7 @@ Notice that frameworks were not banned. Applications could use them but were str
 
 Frapi applications started as an interface to external systems to consume Glance data. With the decision to develop applications with decoupled front-end and back-end layers, REST APIs would need to handle all read-and-write use cases. It was already known that the new projects would not have to deal with simple CRUD operations but would need to implement all the complex business rules and processes unique to the collaboration of each experiment. Based on the problems of creating purely in-house solutions and developing ad-hoc, the team researched to find existing patterns which could be used as a base for building complex software systems.
 
-Domain-Driven Design (DDD) was the main inspiration for the back-end guidelines. It is a set of principles initially defined in the book \textit{Domain-Driven Design: Tackling Complexity in the Heart of Software} written by Eric Evans in 2003 \cite{ddd-blue-book}. The author proposes developing software solutions centred on the domain model with a great understanding of the rules and flows of the business. It fits the needs of systems similar to the ones built by Glance Team, which provide solutions to complex domains with messy logic to be organised \cite{ddd-martin-folwer}. Since the first publication, the principles gained adoption, were put into practice and evolved. The methodology became particularly popular among microservices, helping to split a system into smaller services by identifying the responsibilities and relations of each.
+\acrfull{ddd} was the main inspiration for the back-end guidelines. It is a set of principles initially defined in the book \textit{Domain-Driven Design: Tackling Complexity in the Heart of Software} written by Eric Evans in 2003 \cite{ddd-blue-book}. The author proposes developing software solutions centred on the domain model with a great understanding of the rules and flows of the business. It fits the needs of systems similar to the ones built by Glance Team, which provide solutions to complex domains with messy logic to be organised \cite{ddd-martin-folwer}. Since the first publication, the principles gained adoption, were put into practice and evolved. The methodology became particularly popular among microservices, helping to split a system into smaller services by identifying the responsibilities and relations of each.
 
 The DDD methodology is divided into two phases: Strategic and Tactical Design. The former involves a deep understanding of the business and defining responsibilities and boundaries among modules. It should answer \textit{what} and \textit{why} is the software solution being built. The latter focuses on \textit{how} to translate the knowledge extracted from the first phase into code by defining building blocks. The blocks, such as entities, value objects, aggregates, services, repositories, and events, will be explained briefly on \autoref{sec:building-blocks}. For an in-depth explanation of each pattern, it is recommended the read of Evans' original text \cite{ddd-blue-book} and Vaughn Vernon's \textit{Implementing Domain-Driven Design} book \cite{ddd-red-book}.
 
@@ -299,7 +299,7 @@ The Ports and Adapters Architecture allows easy modifying or even replacing adap
 \subsection{Modular Monolith}
 \label{sec:modular-monolith}
 
-To avoid the issues of a technically partitioned exposed on \autoref{sec:layered-architecture}, the Glance Team decided to divide the system in bounded contexts (\autoref{sec:ddd}), reflecting the subdomains of the problem space. Contexts are independent modules and follow the Ports and Adapters architectural style. \autoref{fig:multiple-bounded-contexts} illustrates this topology with three bounded contexts, each represented by a hexagon. Each module can consume data from databases, external APIs and even other internal models. As a guideline, modules should not directly depend on other bounded context components but instead make use of ports and adapters. 
+To avoid the issues of a technically partitioned exposed on \autoref{sec:layered-architecture}, the Glance Team decided to divide the system in bounded contexts (\autoref{sec:ddd}), reflecting the subdomains of the problem space. Contexts are independent modules and follow the Ports and Adapters architectural style. \autoref{fig:multiple-bounded-contexts} illustrates this topology with three bounded contexts, each represented by a hexagon. Each module can consume data from databases, external APIs and even other internal models. As a guideline, modules should not directly depend on other bounded context components but instead make use of ports and adapters.
 
 \begin{figure}[htbp]
   \centering
@@ -326,7 +326,7 @@ The same reasons for not using microservices apply to databases. A common soluti
 \section{Building blocks}
 \label{sec:building-blocks}
 
-The current section describes recommended building blocks for implementing Glance REST APIs. As the entire guideline, this is not a definitive list with immutable rules. Exceptions can exist, and better ways of developing complex applications may be proposed. The blocks are patterns and best practices from object-oriented programming and may be found in the literature with different names depending on the reference. On the DDD scope, they are divided into three layers: \textbf{domain}, \textbf{application} and \textbf{infrastructure}. 
+The current section describes recommended building blocks for implementing Glance REST APIs. As the entire guideline, this is not a definitive list with immutable rules. Exceptions can exist, and better ways of developing complex applications may be proposed. The blocks are patterns and best practices from object-oriented programming and may be found in the literature with different names depending on the reference. On the DDD scope, they are divided into three layers: \textbf{domain}, \textbf{application} and \textbf{infrastructure}.
 
 \subsection{Domain}
 
@@ -337,7 +337,7 @@ Domain objects are used to model the business and express its logic. This layer 
 
 Value objects \cite{ddd-blue-book} \cite{ddd-reference} are used to represent measurable, quantifiable values or to simply describe concepts in an easier way to test, use and maintain \cite{ddd-red-book}. These objects model the domain and care about their values instead of their identity. Take, for example, a 2-dimensional coordinate represented by points X and Y. The point (1,4) equals any other point with $X = 1$ and $Y = 4$. In this case, it makes sense to model coordinates as a value object \cite{fowler-value-objects}. On the other hand, two different individuals named ``Eric ''may not be the same person. If a person changes their name, it remains the same person. Thus their identity matters, and value objects may not be the best choice to model a person.
 
-On Service Work, FTE (Full-Time Equivalent) represents the work planned or assigned to a task. 1 FTE is the maximum amount of work of a collaboration member. 1 FTE during one day equals to 8 working hours, but 1 FTE during a week equals to 40 work hours. \autoref{code:fte-example} illustrates how the application uses value objects to model a domain concept. Instead of representing FTEs as primitive float values, a class was created. Note how the domain constraint of FTEs being always positive is enforced at the constructor level. This design eliminates the need for validating this rule anywhere else in the system.
+On Service Work, \acrshort{fte} (\acrlong{fte}) represents the work planned or assigned to a task. 1 FTE is the maximum amount of work of a collaboration member. 1 FTE during one day equals to 8 working hours, but 1 FTE during a week equals to 40 work hours. \autoref{code:fte-example} illustrates how the application uses value objects to model a domain concept. Instead of representing FTEs as primitive float values, a class was created. Note how the domain constraint of FTEs being always positive is enforced at the constructor level. This design eliminates the need for validating this rule anywhere else in the system.
 
 \begin{listing}[htbp]
 \begin{minted}[startinline]{php}
@@ -348,7 +348,7 @@ class Fte
 	) {
 		if ($value <= 0) {
 			throw new \Exception("FTE must be positive.");
-		}		
+		}
 	}
 
 	public function equals(Fte $otherFte): bool
@@ -435,7 +435,7 @@ class Task
 
 In systems with complex associations between entities, it becomes difficult to guarantee the consistent state of objects. Evans \cite{ddd-blue-book} \cite{ddd-reference} suggests clustering entities into \textbf{aggregates} with well-defined boundaries. The main entity of the cluster is called \textbf{aggregate root}, and it is the only entity that external objects reference. Persistence and other transactions are made on the entire aggregate. Internal entities are invisible to the outside world of the aggregate boundary, thus making the responsibility of the root to manage and enforce the invariants of the aggregate as a whole.
 
-Continuing with the Service Work example, tasks have multiple planning and assignments on which business rules are enforced. For example, the total FTE assigned to a task should not exceed the FTE planned for the same period. To guard all domain constraints, the Task aggregate boundary was designed around the \texttt{Task}, \texttt{Planning} and \texttt{Assignment} entities as illustrated on \autoref{fig:task-aggregate-boundary}. The \texttt{Task} class is the aggregate root, meaning that planning and assignments are created, exposed and managed by the root entity. When a task is saved, everything on the aggregate is persisted. It is not possible, for example, to save an assignment on the database without updating the whole task. This preserves the task's domain constraints. 
+Continuing with the Service Work example, tasks have multiple planning and assignments on which business rules are enforced. For example, the total FTE assigned to a task should not exceed the FTE planned for the same period. To guard all domain constraints, the Task aggregate boundary was designed around the \texttt{Task}, \texttt{Planning} and \texttt{Assignment} entities as illustrated on \autoref{fig:task-aggregate-boundary}. The \texttt{Task} class is the aggregate root, meaning that planning and assignments are created, exposed and managed by the root entity. When a task is saved, everything on the aggregate is persisted. It is not possible, for example, to save an assignment on the database without updating the whole task. This preserves the task's domain constraints.
 
 \begin{figure}[htbp]
   \centering
@@ -564,7 +564,7 @@ class InMemoryTaskRepository implements TaskRepository
 
 \subsection{Application}
 
-The use cases of the system are placed on the application layer. Use cases are modelled so that they are not dependent on the actor who invoked them so that the same logic can be called via HTTP requests, CLI commands or any other type of user input. Application encapsulates and protects the domain code being an interface to any actor willing to command the system. The application layer depends on itself and the domain layer. It focuses on coordinating the business objects to conceive multiple use cases without depending on the infrastructure code.
+The use cases of the system are placed on the application layer. Use cases are modelled so that they are not dependent on the actor who invoked them so that the same logic can be called via HTTP requests, \acrshort{cli} commands or any other type of user input. Application encapsulates and protects the domain code being an interface to any actor willing to command the system. The application layer depends on itself and the domain layer. It focuses on coordinating the business objects to conceive multiple use cases without depending on the infrastructure code.
 
 \subsubsection{Command}
 \label{sec:command}
@@ -641,7 +641,7 @@ class AssignTaskHandler
 		// Used to validate if member is not overassigned
 		$memberTasks = $this->taskRepoisitory
                             ->tasksByMember($command->memberId);
-		
+
 		$task->assign(
 			$command->memberId,
 			$command->instituteId,
